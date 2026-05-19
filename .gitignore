@@ -1,0 +1,35 @@
+# General
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Environment files
+# Ignore all .env files but keep the examples
+.env
+.env.*
+!.env.example
+
+
+# Python / Backend
+/backend/__pycache__/
+/backend/venv/
+/backend/env/
+/backend/build/
+/backend/dist/
+/backend/*.egg-info/
+/backend/.pytest_cache/
+
+# Node / Frontend
+/frontend/node_modules/
+/frontend/build/
+/frontend/.npm
+/frontend/npm-debug.log*
+
+# Data
+# Ignore cached data from the scraper
+/data/cache/
+
+# IDE and OS files
+.DS_Store
+*.swp
