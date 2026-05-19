@@ -1,0 +1,176 @@
+[
+  {
+    "code": "CSS 143",
+    "title": "Computer Science I",
+    "credit_hours": 4,
+    "department": "CSS",
+    "prerequisites": [],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "11111",
+        "instructor": "Dr. Alice Johnson",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W",
+              "F"
+            ],
+            "start_time": "10:00",
+            "end_time": "10:50",
+            "location": "UWB 105"
+          }
+        ],
+        "credits": 4
+      },
+      {
+        "section_number": "B",
+        "section_id": "11112",
+        "instructor": "Dr. Bob Smith",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "14:00",
+            "end_time": "15:20",
+            "location": "UWB 110"
+          }
+        ],
+        "credits": 4
+      }
+    ]
+  },
+  {
+    "code": "CSS 161",
+    "title": "Computer Science II",
+    "credit_hours": 4,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 143"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "11211",
+        "instructor": "Dr. Carol Davis",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W",
+              "F"
+            ],
+            "start_time": "11:00",
+            "end_time": "11:50",
+            "location": "UWB 205"
+          }
+        ],
+        "credits": 4
+      }
+    ]
+  },
+  {
+    "code": "CSS 201",
+    "title": "Discrete Mathematics",
+    "credit_hours": 3,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 161"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "12111",
+        "instructor": "Dr. David Wilson",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "10:00",
+            "end_time": "11:20",
+            "location": "UWB 115"
+          }
+        ],
+        "credits": 3
+      }
+    ]
+  },
+  {
+    "code": "CSS 342",
+    "title": "Data Structures",
+    "credit_hours": 4,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 211"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "13411",
+        "instructor": "Dr. Emma Martinez",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "14:00",
+            "end_time": "15:20",
+            "location": "UWB 301"
+          }
+        ],
+        "credits": 4
+      },
+      {
+        "section_number": "B",
+        "section_id": "13412",
+        "instructor": "Dr. Frank Lee",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "16:00",
+            "end_time": "17:20",
+            "location": "UWB 310"
+          }
+        ],
+        "credits": 4
+      }
+    ]
+  },
+  {
+    "code": "CSS 385",
+    "title": "Software Engineering",
+    "credit_hours": 4,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "13851",
+        "instructor": "Dr. Grace Chen",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "12:30",
+            "end_time": "13:50",
+            "location": "UWB 320"
+          }
+        ],
+        "credits": 4
+      }
+    ]
+  }
+]
