@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     api_port: int = 8000
     
     # LLM Configuration
-    openai_api_key: str
+    openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4"
     
     # Vector Store Configuration

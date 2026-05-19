@@ -50,7 +50,7 @@ function App() {
       <header className="App-header">
         <div className="header-content">
           <div className="header-main">
-            <h1>🎓 UW Bothell Course Scheduler</h1>
+            <h1>🎓 SmartScheduler</h1>
             <p>Plan your perfect schedule with AI assistance</p>
           </div>
           {apiStatus === 'checking' && (
