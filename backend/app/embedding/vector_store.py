@@ -52,6 +52,11 @@ class VectorStore:
         except Exception as e:
             logger.error(f"Failed to initialize Pinecone: {e}")
             logger.info("Falling back to in-memory storage")
+
+    @property
+    def is_mock(self) -> bool:
+        """Returns True if the store is using the in-memory mock."""
+        return self.index is None
     
     def upsert_embeddings(self, vectors: List[Tuple[str, List[float], Dict]]) -> bool:
         """Store or update embeddings.

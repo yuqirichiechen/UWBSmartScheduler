@@ -59,11 +59,13 @@ class RAGPipeline:
                         "content": prompt
                     }
                 ],
+                response_format={"type": "json_object"}, # Enforce JSON output for models that support it
                 temperature=0.7,
                 max_tokens=2000
             )
             
             recommendation_text = response.choices[0].message.content
+            logger.debug(f"Raw LLM response: {recommendation_text}")
             logger.info("Generated schedule recommendation")
             
             # Parse the recommendation to extract structured data
@@ -83,22 +85,19 @@ class RAGPipeline:
     
     def _get_system_prompt(self) -> str:
         """Get the system prompt for LLM."""
-        return """You are an expert UW Bothell course scheduling assistant. Your role is to help students build effective schedules that meet their constraints and requirements.
+        return """You are an expert UW Bothell course scheduling assistant. Your task is to create a conflict-free weekly schedule based on the user's request and the available courses.
 
-When recommending courses:
-1. Always respect the student's constraints (credits, days, times, etc.)
-2. Ensure no scheduling conflicts between recommended sections
-3. Check prerequisites - only recommend courses the student is eligible for
-4. Provide clear explanations for why each course is recommended
-5. Consider course distribution (avoid overloading on certain days)
-6. Prioritize required courses first, then electives
+Your final output MUST be a single JSON object with two keys:
+1. "recommendation": A markdown-formatted string containing your step-by-step reasoning and the final recommended schedule. In your reasoning, explain why each course was chosen and how it fits the constraints.
+2. "recommended_courses": A JSON list of strings, where each string is the course code of a recommended course (e.g., ["CSS 342", "CSS 385"]).
 
-Format your response as follows:
-- Start with a summary of the recommended schedule
-- List each recommended course with its section number and meeting times
-- Explain why each course meets the student's constraints
-- Mention any alternatives if applicable
-- Flag any concerns or conflicts if they exist"""
+Follow these rules:
+- Analyze the user's constraints and completed courses.
+- Select a set of course sections from the available list that meets all constraints (credit limits, day preferences, prerequisites, no time conflicts).
+- Do not recommend courses if the student has not met the prerequisites.
+- Ensure there are no time conflicts between any of the recommended sections.
+- If you cannot create a valid schedule, explain why in the "recommendation" field and leave "recommended_courses" as an empty list.
+"""
     
     def _format_context(self, courses: List[Dict]) -> str:
         """Format retrieved courses as context.
@@ -222,13 +221,27 @@ Please provide clear, actionable schedule recommendations."""
         Returns:
             Structured recommendation
         """
-        return {
-            "status": "success",
-            "recommendation": recommendation,
-            "recommended_courses": self._extract_course_mentions(recommendation),
-            "constraints": constraints,
-            "timestamp": self._get_timestamp()
-        }
+        try:
+            # The LLM is now expected to return a JSON string
+            parsed_json = json.loads(recommendation)
+            
+            return {
+                "status": "success",
+                "recommendation": parsed_json.get("recommendation", "No recommendation text provided."),
+                "recommended_courses": parsed_json.get("recommended_courses", []),
+                "constraints": constraints,
+                "timestamp": self._get_timestamp()
+            }
+        except (json.JSONDecodeError, TypeError) as e:
+            logger.warning(f"Failed to parse JSON from LLM response: {e}. Falling back to text extraction.")
+            # Fallback to old parsing method if JSON fails
+            return {
+                "status": "success_fallback",
+                "recommendation": recommendation,
+                "recommended_courses": self._extract_course_mentions(recommendation),
+                "constraints": constraints,
+                "timestamp": self._get_timestamp()
+            }
     
     def _extract_course_mentions(self, text: str) -> List[str]:
         """Extract course codes mentioned in recommendation.
