@@ -1,0 +1,140 @@
+.schedule-output-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.schedule-header h2 {
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-badge.valid {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.invalid {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.query-recap {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #667eea;
+}
+
+.query-recap h3 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.query-recap p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.recommendations-section {
+  margin-bottom: 2rem;
+}
+
+.recommendations-section h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.recommendations-text {
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  line-height: 1.8;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+.conflicts-section {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.conflicts-section h3 {
+  color: #856404;
+  margin-bottom: 1rem;
+}
+
+.conflicts-list {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.conflicts-list li {
+  color: #856404;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.conflicts-list li:before {
+  content: "⚠ ";
+  position: absolute;
+  left: 0;
+}
+
+.schedule-grid {
+  margin-top: 2rem;
+}
+
+.schedule-grid h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.calendar-placeholder {
+  background-color: #f5f5f5;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .schedule-output-container {
+    padding: 1rem;
+  }
+
+  .schedule-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .schedule-header h2 {
+    font-size: 1.4rem;
+  }
+}

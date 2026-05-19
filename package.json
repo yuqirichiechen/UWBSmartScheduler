@@ -1,0 +1,49 @@
+{
+  "name": "uw-bothell-course-scheduler",
+  "version": "0.1.0",
+  "description": "AI-powered course scheduling assistant for UW Bothell students",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:backend": "cd backend && python main.py",
+    "dev:frontend": "cd frontend && npm start",
+    "build:backend": "cd backend && pip install -r requirements.txt",
+    "build:frontend": "cd frontend && npm install && npm build",
+    "test:backend": "cd backend && pytest",
+    "test:frontend": "cd frontend && npm test",
+    "lint:backend": "cd backend && pylint app/",
+    "format:backend": "cd backend && black app/",
+    "docs": "echo 'See README.md and SETUP.md for documentation'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uwbothell/css382-scheduler"
+  },
+  "keywords": [
+    "scheduling",
+    "course-planner",
+    "uw-bothell",
+    "rag",
+    "llm",
+    "ai"
+  ],
+  "authors": [
+    {
+      "name": "Richie Chen",
+      "role": "Backend / Data Pipeline"
+    },
+    {
+      "name": "Kevin Vo",
+      "role": "LLM / RAG Integration"
+    },
+    {
+      "name": "Yousuf Al-Bassyiouni",
+      "role": "Frontend / UX"
+    }
+  ],
+  "license": "MIT"
+}
