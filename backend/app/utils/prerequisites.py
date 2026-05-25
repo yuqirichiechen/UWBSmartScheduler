@@ -63,11 +63,42 @@ class PrerequisiteGraph:
     
     def get_prerequisites(self, course_code: str) -> List[str]:
         """Get prerequisites for a course.
-        
+
         Args:
             course_code: Course code
-            
+
         Returns:
             List of prerequisite courses
         """
         return list(self.graph.get(course_code, set()))
+
+    def infer_completed(self, completed_courses: List[str]) -> List[str]:
+        """Expand a list of completed courses by adding all transitive prerequisites.
+
+        If a student completed CSS 342, they must have completed CSS 211,
+        CSS 161, and CSS 143.  This walks the prerequisite chain backwards
+        so students don't need to list every course they've ever taken.
+
+        Args:
+            completed_courses: Courses the student explicitly listed
+
+        Returns:
+            Expanded list including all inferred prerequisites
+        """
+        expanded = set(c.upper() for c in completed_courses)
+        queue = list(expanded)
+
+        while queue:
+            course = queue.pop()
+            for prereq in self.graph.get(course, set()):
+                prereq_upper = prereq.upper()
+                if prereq_upper not in expanded:
+                    expanded.add(prereq_upper)
+                    queue.append(prereq_upper)
+                    logger.debug(f"Inferred completed: {prereq_upper} (prerequisite of {course})")
+
+        added = expanded - set(c.upper() for c in completed_courses)
+        if added:
+            logger.info(f"Inferred {len(added)} additional completed courses: {sorted(added)}")
+
+        return sorted(expanded)

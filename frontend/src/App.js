@@ -12,7 +12,6 @@ function App() {
   const [completedCourses, setCompletedCourses] = useState([]);
   const [apiStatus, setApiStatus] = useState('checking');
 
-  // Check API health on mount
   useEffect(() => {
     const checkAPI = async () => {
       try {
@@ -50,19 +49,16 @@ function App() {
       <header className="App-header">
         <div className="header-content">
           <div className="header-main">
-            <h1>🎓 SmartScheduler</h1>
-            <p>Plan your perfect schedule with AI assistance</p>
+            <h1>Smart<span className="brand-dot">Scheduler</span></h1>
           </div>
           {apiStatus === 'checking' && (
-            <div className="status checking">Connecting to backend...</div>
+            <div className="status checking">Connecting...</div>
           )}
           {apiStatus === 'ready' && (
-            <div className="status ready">✓ Backend connected</div>
+            <div className="status ready">Connected</div>
           )}
           {apiStatus === 'error' && (
-            <div className="status error">
-              ✗ Backend unavailable - Make sure the Python server is running on port 8000
-            </div>
+            <div className="status error">Offline</div>
           )}
         </div>
       </header>
@@ -71,39 +67,29 @@ function App() {
         <div className="container">
           {apiStatus === 'error' && (
             <div className="api-error-banner">
-              <h3>Backend Connection Issue</h3>
-              <p>To run the application locally:</p>
+              <h3>Backend Unavailable</h3>
+              <p>Start the server to use SmartScheduler:</p>
               <ol>
-                <li>
-                  <code>cd backend</code>
-                </li>
-                <li>
-                  <code>source venv/bin/activate</code>
-                </li>
-                <li>
-                  <code>python main.py</code>
-                </li>
+                <li><code>cd backend</code></li>
+                <li><code>source venv/bin/activate</code></li>
+                <li><code>python main.py</code></li>
               </ol>
-              <p>The server should start at http://localhost:8000</p>
             </div>
           )}
 
           {apiStatus !== 'error' && (
             <>
               <QueryInput onSubmit={handleQuery} loading={loading} />
-
               <CompletedCourses onUpdate={handleCompletedCoursesUpdate} />
 
               {error && (
-                <div className="error-message">
-                  <strong>⚠️ Error:</strong> {error}
-                </div>
+                <div className="error-message">{error}</div>
               )}
 
               {loading && (
                 <div className="loading-spinner">
                   <div className="spinner"></div>
-                  <p>Generating your personalized schedule...</p>
+                  <p>Building your schedule...</p>
                 </div>
               )}
 
@@ -116,16 +102,7 @@ function App() {
       </main>
 
       <footer className="App-footer">
-        <p>CSS 382 Capstone | UW Bothell AI-Powered Course Scheduler</p>
-        <p className="footer-links">
-          <a href="https://github.com/uwbothell-css382/course-scheduler" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-          {' | '}
-          <a href="/BACKEND.md" target="_blank" rel="noopener noreferrer">
-            API Docs
-          </a>
-        </p>
+        <p>CSS 382 &middot; UW Bothell &middot; AI-Powered Course Scheduling</p>
       </footer>
     </div>
   );

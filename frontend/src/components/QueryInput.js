@@ -11,32 +11,36 @@ function QueryInput({ onSubmit, loading }) {
     }
   };
 
-  const exampleQueries = [
-    "I want CSS core requirements, only Tuesday and Thursday, max 14 credits",
-    "Schedule me for morning classes only, I have work in the afternoon",
-    "No Friday classes, I can't drive to campus that day",
-    "I need CSS 342, CSS 385, and one elective. Keep it under 12 credits",
-  ];
-
-  const fillExample = (example) => {
-    setQuery(example);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
   };
+
+  const exampleQueries = [
+    "CSS core requirements, only Tue/Thu, max 14 credits",
+    "Morning classes only, I work afternoons",
+    "No Friday classes, can't drive to campus",
+    "CSS 342 + CSS 385, keep it under 12 credits",
+  ];
 
   return (
     <div className="query-input-container">
       <div className="input-section">
-        <h2>Describe Your Schedule</h2>
-        <p className="subtitle">Enter your scheduling preferences in plain English</p>
+        <h2>What does your ideal schedule look like?</h2>
+        <p className="subtitle">Describe your preferences in plain English</p>
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <textarea
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g., I want CSS core requirements, mostly Tuesday and Thursday, max 14 credits"
+              onKeyDown={handleKeyDown}
+              placeholder="e.g., I want CSS core requirements, mostly Tuesday and Thursday, max 14 credits..."
               className="query-textarea"
               disabled={loading}
-              rows="4"
+              rows="3"
             />
           </div>
 
@@ -45,22 +49,21 @@ function QueryInput({ onSubmit, loading }) {
             className="submit-button"
             disabled={loading || !query.trim()}
           >
-            {loading ? 'Generating schedule...' : 'Generate Schedule'}
+            {loading ? 'Generating...' : 'Generate Schedule'}
           </button>
         </form>
 
         <div className="examples">
-          <p className="examples-title">💡 Example queries:</p>
+          <p className="examples-title">Try an example</p>
           <div className="example-buttons">
             {exampleQueries.map((example, idx) => (
               <button
                 key={idx}
-                onClick={() => fillExample(example)}
+                onClick={() => setQuery(example)}
                 className="example-button"
                 disabled={loading}
-                title={example}
               >
-                {example.substring(0, 50)}...
+                {example}
               </button>
             ))}
           </div>
@@ -68,12 +71,12 @@ function QueryInput({ onSubmit, loading }) {
       </div>
 
       <div className="tips-section">
-        <h3>💬 Tips for better results:</h3>
+        <h3>Tips</h3>
         <ul>
-          <li><strong>Be specific:</strong> Mention exact courses or departments</li>
-          <li><strong>Mention constraints:</strong> Days, times, credit limits</li>
-          <li><strong>List completed courses:</strong> Use the form to add them</li>
-          <li><strong>Include preferences:</strong> Morning/afternoon, online/in-person</li>
+          <li><strong>Be specific</strong> &mdash; name courses or departments</li>
+          <li><strong>Set constraints</strong> &mdash; days, times, credit limits</li>
+          <li><strong>Add completed courses</strong> &mdash; for prerequisite checks</li>
+          <li><strong>State preferences</strong> &mdash; morning, afternoon, in-person</li>
         </ul>
       </div>
     </div>

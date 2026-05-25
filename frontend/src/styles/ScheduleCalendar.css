@@ -1,182 +1,226 @@
+/* ============================================
+   Schedule Calendar — Full-height day columns
+   ============================================ */
+
 .schedule-calendar-container {
-  margin-top: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  animation: fadeInUp 0.5s ease-out 0.15s both;
 }
 
 .calendar-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.conflict-warning {
-  color: #d9534f;
-  background-color: #f2dede;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-weight: bold;
+.calendar-info h3 {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .no-courses {
-  color: #777;
+  color: var(--text-dim);
+  font-size: 0.85rem;
   font-style: italic;
 }
 
+/* Wrapper */
 .calendar-wrapper {
-  overflow-x: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-root);
 }
 
-.calendar-grid {
+/* Header row */
+.calendar-header {
   display: grid;
-  grid-template-columns: 60px repeat(5, 1fr);
-  min-width: 600px;
+  grid-template-columns: 64px repeat(5, 1fr);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
 }
 
-.time-slot {
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  padding: 5px;
-  text-align: right;
-  height: 60px;
-}
-
-.time-slot.header {
-  border-bottom: 2px solid #ddd;
-  height: auto;
-  padding: 10px;
+.time-gutter-header {
+  border-right: 1px solid var(--border);
 }
 
 .day-header {
-  font-weight: bold;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   text-align: center;
-  padding: 10px;
-  border-bottom: 2px solid #ddd;
-  border-right: 1px solid #ddd;
-  background-color: #f9f9f9;
+  padding: 10px 8px;
+  color: var(--text-secondary);
+  border-right: 1px solid var(--border);
 }
 
 .day-header:last-child {
   border-right: none;
 }
 
-.time-label {
-  font-size: 12px;
-  color: #555;
-  display: inline-block;
-  transform: translateY(-50%);
-}
-
-.calendar-cell {
+/* Grid body — fixed height container */
+.calendar-body {
+  display: grid;
+  grid-template-columns: 64px repeat(5, 1fr);
   position: relative;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  height: 60px;
 }
 
-.calendar-cell:nth-child(6n) {
+/* Time gutter */
+.time-gutter {
+  position: relative;
+  border-right: 1px solid var(--border);
+  background: var(--bg-root);
+}
+
+.time-label {
+  position: absolute;
+  right: 8px;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Day columns */
+.day-column {
+  position: relative;
+  border-right: 1px solid rgba(37, 37, 56, 0.3);
+}
+
+.day-column:last-child {
   border-right: none;
 }
 
-.event {
+/* Hour gridlines */
+.hour-line {
   position: absolute;
-  left: 5%;
-  width: 90%;
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
-  border-radius: 3px;
-  padding: 4px;
-  box-sizing: border-box;
-  overflow: hidden;
-  font-size: 11px;
-  z-index: 1;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid rgba(37, 37, 56, 0.4);
 }
 
-.event-content {
+/* Event blocks */
+.event-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 2;
+  cursor: default;
+  border: 1.5px solid transparent;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  transition: transform 0.15s, box-shadow 0.2s, z-index 0s;
+  min-height: 28px;
+}
+
+.event-block:hover {
+  transform: scale(1.03);
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .event-code {
-  font-weight: bold;
-  color: #0d47a1;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--event-text, var(--text));
+  line-height: 1.2;
 }
 
-.event-time, .event-room {
-  color: #555;
+.event-title {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.event-details {
-  margin-top: 30px;
+.event-time {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  line-height: 1.2;
 }
 
-.event-list {
+.event-room {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  line-height: 1.2;
+}
+
+/* Legend below calendar */
+.calendar-legend {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
-.course-item {
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 15px;
-  background-color: #fafafa;
-}
-
-.course-header {
+.legend-item {
   display: flex;
-  gap: 10px;
-  align-items: baseline;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  gap: 8px;
 }
 
-.course-code {
-  font-weight: bold;
-  font-size: 1.1em;
-  color: #333;
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.course-title {
-  color: #666;
+.legend-code {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
-.section-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+.legend-title {
+  font-size: 0.78rem;
+  color: var(--text-dim);
 }
 
-.section-info {
-  display: flex;
-  gap: 15px;
-  font-size: 0.9em;
-  color: #444;
-}
-
-.section-num {
-  font-weight: bold;
-}
-
-.meeting-times {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.meeting-time {
-  font-size: 0.9em;
-  color: #666;
-  background-color: #eee;
-  padding: 3px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  width: fit-content;
+@media (max-width: 640px) {
+  .schedule-calendar-container {
+    padding: 16px;
+  }
+  .calendar-header,
+  .calendar-body {
+    grid-template-columns: 48px repeat(5, 1fr);
+  }
+  .event-code {
+    font-size: 0.68rem;
+  }
+  .event-time,
+  .event-room {
+    display: none;
+  }
+  .calendar-legend {
+    flex-direction: column;
+    gap: 8px;
+  }
 }

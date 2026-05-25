@@ -46,11 +46,13 @@ class ConstraintParser:
         """
         query_lower = query.lower()
         
-        # Patterns: "under 14", "less than 15", "max 12", "no more than 13"
+        # Patterns: "under 14 credits", "less than 15 credits", "max 12 credits",
+        # "credits under 10", "keep credits under 10", "credit load under 14"
         patterns = [
             r'(?:under|less than|max|maximum|no more than)\s+(\d+)\s*(?:credits?|credi|hrs?)',
             r'(\d+)\s*(?:credits?|credi|hrs?)\s*(?:or less|max|maximum|or fewer)',
-            r'keep.*?(?:under|less than|below)\s+(\d+)\s*(?:credits?|credi)',
+            r'(?:credits?|load).*?(?:under|less than|below)\s+(\d+)',
+            r'(?:under|less than|max|maximum|no more than)\s+(\d+)',
             r'load.*?(?:under|less than)\s+(\d+)',
         ]
         
@@ -124,9 +126,9 @@ class ConstraintParser:
         patterns = [
             r'(?:only|come|class)\s+(?:on\s+)?([MTWFSu\s,and]+)',
             r'(?:prefer|want|schedule).*?(?:on\s+)?([MTWFSu\s,and]+)',
-            r'tuesday.*?thursday|t.*?th',
+            r'(tuesday.*?thursday)',
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, query_lower)
             if match:
@@ -151,46 +153,39 @@ class ConstraintParser:
     @staticmethod
     def _extract_avoid_days(query: str) -> Optional[List[str]]:
         """Extract days to avoid from query.
-        
+
         Args:
             query: User query
-            
+
         Returns:
             List of days to avoid or None
         """
         query_lower = query.lower()
         days_map = {
-            'monday': 'M', 'mon': 'M',
-            'tuesday': 'T', 'tue': 'T', 'tues': 'T',
-            'wednesday': 'W', 'wed': 'W',
-            'thursday': 'Th', 'thurs': 'Th',
-            'friday': 'F', 'fri': 'F',
-            'saturday': 'S', 'sat': 'S',
-            'sunday': 'Su', 'sun': 'Su'
+            'monday': 'M', 'mondays': 'M',
+            'tuesday': 'T', 'tuesdays': 'T',
+            'wednesday': 'W', 'wednesdays': 'W',
+            'thursday': 'Th', 'thursdays': 'Th',
+            'friday': 'F', 'fridays': 'F',
+            'saturday': 'S', 'saturdays': 'S',
+            'sunday': 'Su', 'sundays': 'Su',
         }
-        
+
         avoid = []
-        
-        # Patterns: "can't come Friday", "no Fridays", "avoid Tuesday"
-        patterns = [
-            r"(?:can't|cannot|no|avoid|not|skip|don't)\s+(?:come\s+)?(?:on\s+)?([mtfswu\s,and]+?days?)",
-            r"(?:can't|cannot|no|avoid)\s+(?:on\s+)?([mtfswu\s,and]+?days?)",
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, query_lower)
-            if match:
-                days_text = match.group(1)
-                for day_name, day_code in days_map.items():
-                    if day_name in days_text:
-                        if day_code not in avoid:
-                            avoid.append(day_code)
-        
-        # Special cases
-        if re.search(r"can't drive.*friday|friday.*drive", query_lower):
-            if 'F' not in avoid:
-                avoid.append('F')
-        
+
+        # Match a negative trigger word, then capture everything up to the
+        # end of the sentence / next clause so we can scan it for day names.
+        trigger = re.search(
+            r"(?:can'?t|cannot|no|avoid|not|skip|don'?t|without)"
+            r"[\s\w,]*",
+            query_lower,
+        )
+        if trigger:
+            fragment = trigger.group(0)
+            for day_name, day_code in days_map.items():
+                if day_name in fragment and day_code not in avoid:
+                    avoid.append(day_code)
+
         result = sorted(list(set(avoid)))
         if result:
             logger.debug(f"Extracted avoid days: {result}")

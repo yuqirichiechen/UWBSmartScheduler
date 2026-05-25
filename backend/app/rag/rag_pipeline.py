@@ -60,7 +60,7 @@ class RAGPipeline:
                     }
                 ],
                 response_format={"type": "json_object"}, # Enforce JSON output for models that support it
-                temperature=0.7,
+                temperature=0.3,
                 max_tokens=2000
             )
             
@@ -85,18 +85,19 @@ class RAGPipeline:
     
     def _get_system_prompt(self) -> str:
         """Get the system prompt for LLM."""
-        return """You are an expert UW Bothell course scheduling assistant. Your task is to create a conflict-free weekly schedule based on the user's request and the available courses.
+        return """You are a UW Bothell course scheduling assistant. Build a conflict-free weekly schedule from the available courses.
 
-Your final output MUST be a single JSON object with two keys:
-1. "recommendation": A markdown-formatted string containing your step-by-step reasoning and the final recommended schedule. In your reasoning, explain why each course was chosen and how it fits the constraints.
-2. "recommended_courses": A JSON list of strings, where each string is the course code of a recommended course (e.g., ["CSS 342", "CSS 385"]).
+Output a single JSON object with two keys:
+1. "recommendation": A brief 1-2 sentence summary. Only mention if a constraint couldn't be satisfied or if the selection was limited. Do NOT restate the student's completed courses or explain prerequisites. Keep it minimal.
+2. "recommended_courses": A JSON list of course code strings (e.g., ["CSS 342", "CSS 385"]).
 
-Follow these rules:
-- Analyze the user's constraints and completed courses.
-- Select a set of course sections from the available list that meets all constraints (credit limits, day preferences, prerequisites, no time conflicts).
-- Do not recommend courses if the student has not met the prerequisites.
-- Ensure there are no time conflicts between any of the recommended sections.
-- If you cannot create a valid schedule, explain why in the "recommendation" field and leave "recommended_courses" as an empty list.
+Rules:
+- Only recommend courses the student has prerequisites for (based on their completed courses list).
+- Pick ONE section per course that best fits the constraints (e.g. avoid certain days). You do NOT need every section to fit — just pick the best one.
+- No time conflicts between the selected sections.
+- Respect all constraints (credit limits, day/time preferences).
+- Recommend as many eligible courses as possible (aim for 3-4 courses / 15 credits) unless the student requests fewer.
+- NEVER return an empty list if there are eligible courses available. Always recommend at least one course.
 """
     
     def _format_context(self, courses: List[Dict]) -> str:
@@ -166,25 +167,17 @@ Sections:
         """
         completed_str = ", ".join(completed_courses) if completed_courses else "None"
         
-        return f"""Based on the student's constraints, completed courses, and available courses, recommend the best schedule:
+        return f"""Build a schedule from these inputs:
 
-STUDENT INFORMATION:
-Completed Courses: {completed_str}
+COMPLETED COURSES: {completed_str}
 
-STUDENT CONSTRAINTS:
+CONSTRAINTS:
 {self._format_constraints(constraints)}
 
 AVAILABLE COURSES AND SECTIONS:
 {context}
 
-REQUIREMENTS:
-1. Recommend specific course sections (not just courses)
-2. Ensure no scheduling conflicts between sections
-3. Verify student meets prerequisites for each course
-4. Respect all stated constraints
-5. Explain your reasoning for each recommendation
-
-Please provide clear, actionable schedule recommendations."""
+Select specific sections with no time conflicts. Only include courses the student is eligible for."""
     
     def _format_constraints(self, constraints: Dict) -> str:
         """Format constraints for display."""
@@ -225,9 +218,14 @@ Please provide clear, actionable schedule recommendations."""
             # The LLM is now expected to return a JSON string
             parsed_json = json.loads(recommendation)
             
+            rec = parsed_json.get("recommendation", "No recommendation text provided.")
+            # LLM sometimes returns recommendation as a dict/list instead of string
+            if not isinstance(rec, str):
+                rec = json.dumps(rec, indent=2)
+
             return {
                 "status": "success",
-                "recommendation": parsed_json.get("recommendation", "No recommendation text provided."),
+                "recommendation": rec,
                 "recommended_courses": parsed_json.get("recommended_courses", []),
                 "constraints": constraints,
                 "timestamp": self._get_timestamp()

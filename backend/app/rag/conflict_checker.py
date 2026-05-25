@@ -183,7 +183,7 @@ class ConflictChecker:
             logger.warning(f"Schedule below min credits: {total_credits} < {min_credits}")
         
         # Check day preferences
-        avoid_days = set(constraints.get('avoid_days', []))
+        avoid_days = set(constraints.get('avoid_days') or [])
         for section in sections:
             meetings = section.get('meeting_times', [])
             for meeting in meetings:

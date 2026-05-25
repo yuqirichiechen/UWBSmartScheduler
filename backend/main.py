@@ -7,7 +7,7 @@ import logging
 import json
 
 from app.config import settings
-from app.utils import setup_logging
+from app.utils import setup_logging, PrerequisiteGraph
 from app.rag import ConstraintParser, RAGPipeline, ConflictChecker
 from app.embedding import EmbeddingService, VectorStore
 from app.scraper import UWScheduleScraper
@@ -38,13 +38,14 @@ vector_store = None
 rag_pipeline = None
 scraper = None
 preprocessed_courses = None  # Cache for courses
+prereq_graph = None  # Prerequisite graph for inference
 
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup."""
-    global embedding_service, vector_store, rag_pipeline, scraper, preprocessed_courses
+    global embedding_service, vector_store, rag_pipeline, scraper, preprocessed_courses, prereq_graph
     
     try:
         logger.info("=" * 60)
@@ -58,7 +59,21 @@ async def startup_event():
         # Load courses
         preprocessed_courses = scraper.scrape_courses()
         logger.info(f"✓ Loaded {len(preprocessed_courses)} courses")
-        
+
+        # Build prerequisite graph from the scraper's full prerequisite database
+        prereq_graph = PrerequisiteGraph()
+        for num in range(100, 500):
+            for prefix in ("CSS", "CSE"):
+                code = f"{prefix} {num}"
+                prereqs = scraper._get_prerequisites(code)
+                if prereqs:
+                    prereq_graph.add_course(code, prereqs)
+        # Also add any loaded courses not yet in the graph
+        for course in preprocessed_courses:
+            if course['code'] not in prereq_graph.graph:
+                prereq_graph.add_course(course['code'], course.get('prerequisites', []))
+        logger.info(f"✓ Prerequisite graph built ({len(prereq_graph.graph)} courses)")
+
         # Initialize embedding service
         if settings.openai_api_key:
             embedding_service = EmbeddingService(
@@ -133,7 +148,7 @@ class ScheduleResponse(BaseModel):
     query: str
     recommendations: str
     constraints: dict
-    recommended_courses: List[str]
+    recommended_courses: List[dict]
     is_valid: bool
     issues: List[str]
 
@@ -175,41 +190,76 @@ async def get_schedule(request: ScheduleRequest):
         # Parse constraints from query
         constraints = ConstraintParser.parse_query(request.query)
         logger.info(f"Constraint parsing result: {json.dumps(constraints, indent=2, default=str)}")
-        
-        # Filter courses based on constraints
-        retrieved_courses = _filter_courses_by_constraints(
-            preprocessed_courses,
-            constraints
+
+        # Retrieve courses using vector store (semantic search) when available,
+        # otherwise fall back to simple constraint-based filtering.
+        retrieved_courses = _retrieve_courses(
+            request.query, constraints, preprocessed_courses,
+            embedding_service, vector_store
         )
         logger.info(f"Retrieved {len(retrieved_courses)} courses matching constraints")
         
-        # Generate recommendations using RAG
+        # Expand completed courses by inferring transitive prerequisites.
+        # e.g. completing CSS 342 implies CSS 211, CSS 161, CSS 143 are done.
         completed = request.completed_courses or []
+        if prereq_graph and completed:
+            completed = prereq_graph.infer_completed(completed)
+            logger.info(f"Expanded completed courses: {completed}")
+
+        # Filter out courses the student already completed
+        completed_set = set(c.upper().replace(' ', '') for c in completed)
+        eligible_courses = [
+            c for c in retrieved_courses
+            if c['code'].replace(' ', '').upper() not in completed_set
+        ]
+
+        # Pre-filter sections on avoided days so the LLM only sees valid options
+        avoid_days = set(constraints.get('avoid_days') or [])
+        if avoid_days:
+            filtered = []
+            for course in eligible_courses:
+                good_sections = [
+                    s for s in course.get('sections', [])
+                    if not any(
+                        d in avoid_days
+                        for mt in s.get('meeting_times', [])
+                        for d in (mt.get('days') or [])
+                    )
+                ]
+                if good_sections:
+                    c = dict(course)
+                    c['sections'] = good_sections
+                    filtered.append(c)
+            eligible_courses = filtered
+
+        logger.info(f"Filtered to {len(eligible_courses)} eligible courses")
+
         recommendation = rag_pipeline.recommend_schedule(
             constraints=constraints,
-            retrieved_courses=retrieved_courses,
+            retrieved_courses=eligible_courses,
             completed_courses=completed
         )
         
-        # Validate schedule constraints
-        recommended_sections = _parse_sections_from_recommendation(
-            recommendation.get("recommended_courses", []),
-            retrieved_courses
-        )
-        
+        # Hydrate course codes into full course objects for the frontend
+        course_codes = recommendation.get("recommended_courses", [])
+        hydrated_courses = _hydrate_courses(course_codes, eligible_courses, constraints)
+
+        # Validate schedule constraints (use hydrated courses which are already filtered)
+        recommended_sections = _parse_sections_from_hydrated(hydrated_courses)
+
         is_valid, issues = ConflictChecker.validate_schedule_constraints(
             recommended_sections,
             constraints,
             completed
         )
-        
+
         logger.info(f"Schedule validation: valid={is_valid}, issues={len(issues)}")
-        
+
         return ScheduleResponse(
             query=request.query,
             recommendations=recommendation.get("recommendation", "No recommendation generated"),
             constraints=constraints,
-            recommended_courses=recommendation.get("recommended_courses", []),
+            recommended_courses=hydrated_courses,
             is_valid=is_valid,
             issues=issues
         )
@@ -332,6 +382,64 @@ async def get_vector_store_stats():
 
 # Helper functions
 
+def _retrieve_courses(
+    query: str,
+    constraints: dict,
+    all_courses: List[dict],
+    emb_service,
+    vec_store,
+) -> List[dict]:
+    """Retrieve relevant courses using vector search + constraint filtering.
+
+    If the embedding service and vector store are available, the user query is
+    embedded and a semantic search is performed.  The results are then merged
+    with any explicitly-required courses from constraint parsing so nothing
+    the student asked for by name is dropped.
+
+    Falls back to simple constraint filtering when embeddings aren't set up.
+    """
+    # --- semantic retrieval path ---
+    if emb_service and vec_store:
+        try:
+            # Only attempt if the vector store actually has vectors
+            stats = vec_store.get_stats()
+            if stats.get('vector_count', 0) > 0:
+                query_embedding = emb_service.embed_course_data(query)
+                if query_embedding:
+                    results = vec_store.query(query_embedding, top_k=10)
+                    # Map vector-store hits back to full course objects
+                    hit_codes = set()
+                    for r in results:
+                        code = r.get('course_code') or r.get('metadata', {}).get('course_code')
+                        if code:
+                            hit_codes.add(code.replace(' ', '').upper())
+
+                    retrieved = []
+                    for course in all_courses:
+                        if course['code'].replace(' ', '').upper() in hit_codes:
+                            retrieved.append(course)
+
+                    # Merge in any explicitly-required courses the student named
+                    required = set(
+                        c.upper().replace(' ', '')
+                        for c in (constraints.get('required_courses') or [])
+                    )
+                    already = set(c['code'].replace(' ', '').upper() for c in retrieved)
+                    for course in all_courses:
+                        if course['code'].replace(' ', '').upper() in required and \
+                           course['code'].replace(' ', '').upper() not in already:
+                            retrieved.append(course)
+
+                    if retrieved:
+                        logger.info(f"Vector search returned {len(retrieved)} courses")
+                        return retrieved
+        except Exception as e:
+            logger.warning(f"Vector retrieval failed, falling back to filter: {e}")
+
+    # --- fallback: simple constraint filter ---
+    return _filter_courses_by_constraints(all_courses, constraints)
+
+
 def _filter_courses_by_constraints(courses: List[dict], constraints: dict) -> List[dict]:
     """Filter courses based on constraints.
     
@@ -343,7 +451,7 @@ def _filter_courses_by_constraints(courses: List[dict], constraints: dict) -> Li
         Filtered list of relevant courses
     """
     filtered = []
-    max_results = 10
+    max_results = 30
     
     required_codes = set(c.upper().replace(' ', '') for c in (constraints.get('required_courses') or []))
     
@@ -370,7 +478,54 @@ def _filter_courses_by_constraints(courses: List[dict], constraints: dict) -> Li
     return filtered[:max_results]
 
 
-def _parse_sections_from_recommendation(recommended_courses: List[str], 
+def _hydrate_courses(course_codes: List[str], available_courses: List[dict],
+                     constraints: Optional[dict] = None) -> List[dict]:
+    """Map course code strings to full course objects for the frontend.
+
+    Filters out sections that violate avoid_days constraints so the frontend
+    only shows sections the student can actually take.
+    """
+    code_set = set(c.upper().replace(' ', '') for c in course_codes)
+    avoid_days = set(constraints.get('avoid_days') or []) if constraints else set()
+    hydrated = []
+
+    for course in available_courses:
+        course_clean = course['code'].replace(' ', '').upper()
+        if course_clean in code_set:
+            sections = []
+            for s in course.get('sections', []):
+                # Filter out sections that meet on avoided days
+                if avoid_days:
+                    meetings = s.get('meeting_times', [])
+                    has_avoided_day = any(
+                        day in avoid_days
+                        for mt in meetings
+                        for day in (mt.get('days') or [])
+                    )
+                    if has_avoided_day:
+                        continue
+
+                section = dict(s)
+                if not section.get('location'):
+                    meetings = section.get('meeting_times', [])
+                    section['location'] = meetings[0].get('location', 'TBA') if meetings else 'TBA'
+                sections.append(section)
+
+            # Only include the course if it has at least one valid section
+            if sections:
+                hydrated.append({
+                    'code': course['code'],
+                    'title': course.get('title', ''),
+                    'credits': course.get('credit_hours', course.get('credits', 0)),
+                    'prerequisites': course.get('prerequisites', []),
+                    'department': course.get('department', ''),
+                    'sections': sections,
+                })
+
+    return hydrated
+
+
+def _parse_sections_from_recommendation(recommended_courses: List[str],
                                        retrieved_courses: List[dict]) -> List[dict]:
     """Extract sections from recommended courses.
     
@@ -398,11 +553,24 @@ def _parse_sections_from_recommendation(recommended_courses: List[str],
     return sections
 
 
+def _parse_sections_from_hydrated(hydrated_courses: List[dict]) -> List[dict]:
+    """Extract first section from each hydrated course for validation."""
+    sections = []
+    for course in hydrated_courses:
+        if course.get('sections'):
+            section = course['sections'][0].copy()
+            section['course_code'] = course['code']
+            section['prerequisites'] = course.get('prerequisites', [])
+            section['credits'] = course.get('credits', 0)
+            sections.append(section)
+    return sections
+
+
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
-        app,
+        "main:app",
         host=settings.api_host,
         port=settings.api_port,
         reload=settings.debug
