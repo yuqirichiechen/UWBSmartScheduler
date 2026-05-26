@@ -15,14 +15,27 @@ smartscheduler/
 
 ## One-time setup
 
-1. Push the repo to GitHub (or GitLab / Bitbucket).
+1. **Commit and push all the deploy files first** — `vercel.json`, `api/`, root
+   `requirements.txt`, root `package.json` (with `vercel-build` script and
+   workspace declaration removed), `.vercelignore`. If you import the repo
+   before pushing these, Vercel sees the old layout and the deploy will fail.
+
 2. In Vercel: **New Project → Import Git Repository → pick this repo**.
-3. Framework Preset: **Other** (Vercel reads `vercel.json` for the rest).
-4. The `vercel.json` already pins:
-   - `buildCommand: cd frontend && npm install && npm run build`
+
+3. Framework Preset: **Other**.
+
+4. **Leave Build Command, Output Directory, and Install Command fields blank
+   in the Vercel UI** — `vercel.json` already sets:
+   - `buildCommand: npm run vercel-build`
    - `outputDirectory: frontend/build`
-   - `installCommand: npm install --prefix frontend --legacy-peer-deps`
-   - `functions: api/index.py` with `maxDuration: 30` and `memory: 1024`.
+   - `installCommand: echo 'install handled by buildCommand'` (no-op so we
+     don't trigger an npm install on the root package.json)
+   - `functions: api/index.py` with `maxDuration: 30`, `memory: 1024`,
+     `includeFiles: backend/**` (so the FastAPI source + cache JSON ship with
+     the function — `sys.path` manipulation in `api/index.py` defeats
+     Vercel's static-import detection so we declare the dependency
+     explicitly).
+
 5. Click **Deploy**.
 
 ## Environment variables (all optional)
@@ -119,17 +132,40 @@ Comfortably inside the 10s Hobby / 60s Pro timeout. Warm invocations are
 
 ## Troubleshooting
 
-- **`502: NO_RESPONSE_FROM_FUNCTION`** — usually means a Python import failed.
-  Check the function logs in Vercel; the most common culprits are a missing
-  field in `requirements.txt` or a stale `__pycache__` shipped by accident.
+- **`404: NOT_FOUND` with `DEPLOYMENT_NOT_FOUND`** — the deployment never
+  finished or never started. Causes we've seen:
+  1. The Vercel project was imported before the deploy files were pushed.
+     Push `vercel.json`, `api/`, root `requirements.txt`, the updated root
+     `package.json`, and `.vercelignore`, then redeploy.
+  2. Root `package.json` declared `"workspaces": ["backend", "frontend"]`
+     but `backend/` has no `package.json`, so `npm install` failed before
+     `buildCommand` ever ran. Already fixed in this repo.
+  3. Vercel's UI override fields for Build Command / Install Command /
+     Output Directory took precedence over `vercel.json` and pointed
+     somewhere wrong. Open **Project → Settings → Build & Development
+     Settings** and confirm all override toggles are OFF.
 
-- **`404` on `/api/*`** — Vercel's rewrites map `/api/(.*)` → `/api/index`. If
-  you renamed `api/index.py`, update `vercel.json` to match.
+  Open the **Deployments** tab in the Vercel dashboard — the failed build's
+  log has the real error.
 
-- **`courses_loaded: 0` in `/api/health`** — the cache JSON didn't make it into
-  the deployment. Confirm `backend/data/cache/courses_bothell_css.json` is not
-  in `.vercelignore` (it isn't by default) and is committed to git.
+- **`502: NO_RESPONSE_FROM_FUNCTION`** — a Python import failed. Check the
+  function logs. Common causes: a missing entry in root `requirements.txt`,
+  or `includeFiles` not picking up `backend/` (it should — `vercel.json`
+  declares `"includeFiles": "backend/**"`).
+
+- **`404` on `/api/*`** — Vercel's rewrites map `/api/(.*)` → `/api/index`.
+  If you renamed `api/index.py`, update `vercel.json`.
+
+- **`courses_loaded: 0` in `/api/health`** — the cache JSON didn't make it
+  into the deployment. Confirm `backend/data/cache/courses_bothell_css.json`
+  is committed to git and isn't covered by `.vercelignore`.
 
 - **Frontend hits `http://localhost:8000` in production** — make sure you
   didn't set `REACT_APP_API_URL` in Vercel's environment variables; the
   client defaults to a relative base URL in `NODE_ENV=production`.
+
+- **Local `npm run build` fails with `Cannot find module ajv/...` on Node 23+**
+  — CRA 5.0.1 has known dependency-resolution issues on Node 23+. This does
+  not affect Vercel (which runs Node 22). To build locally, use Node 22 via
+  `nvm install 22 && nvm use 22`. The `engines.node` field in `package.json`
+  pins Vercel to `20.x || 22.x`.
