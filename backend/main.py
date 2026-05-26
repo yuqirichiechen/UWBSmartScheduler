@@ -44,19 +44,28 @@ prereq_graph = None  # Prerequisite graph for inference
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize services on startup."""
+    """Initialize services on startup.
+
+    On serverless platforms (Vercel) this runs once per cold-start container.
+    Anything slow (live scraping, generating embeddings) is skipped when
+    `settings.serverless` is true — the cached course file is the source of
+    truth for the deployed instance.
+    """
     global embedding_service, vector_store, rag_pipeline, scraper, preprocessed_courses, prereq_graph
-    
+
     try:
         logger.info("=" * 60)
         logger.info("Initializing UW Bothell Course Scheduler Backend")
+        logger.info(f"serverless={settings.serverless}")
         logger.info("=" * 60)
-        
+
         # Initialize scraper
         scraper = UWScheduleScraper(cache_dir=settings.cache_dir)
         logger.info("✓ Scraper initialized")
-        
-        # Load courses
+
+        # Load courses. On serverless we go through the same scrape_courses
+        # entrypoint but the cache file (committed in the repo) wins, so we
+        # never hit the network on a cold start.
         preprocessed_courses = scraper.scrape_courses()
         logger.info(f"✓ Loaded {len(preprocessed_courses)} courses")
 
@@ -74,64 +83,59 @@ async def startup_event():
                 prereq_graph.add_course(course['code'], course.get('prerequisites', []))
         logger.info(f"✓ Prerequisite graph built ({len(prereq_graph.graph)} courses)")
 
-        # Initialize embedding service
-        if settings.openai_api_key:
-            embedding_service = EmbeddingService(
-                api_key=settings.openai_api_key,
-                model="text-embedding-3-small"
-            )
-            logger.info("✓ Embedding service initialized")
-        else:
-            logger.warning("⚠ OpenAI API key not configured")
-        
-        # Initialize vector store
+        # Vector store is always created — it falls back to an in-memory mock
+        # when no Pinecone key is set, so the API surface stays stable.
         vector_store = VectorStore(
             api_key=settings.pinecone_api_key if settings.pinecone_api_key else None,
             environment=settings.pinecone_environment if settings.pinecone_environment else None,
             index_name=settings.pinecone_index_name
         )
         logger.info("✓ Vector store initialized")
-        
-        # Prepare embeddings (if embedding service is available)
-        if embedding_service and preprocessed_courses:
-            logger.info("Generating course embeddings...")
-            course_texts = [
-                embedding_service.format_course_for_embedding(course)
-                for course in preprocessed_courses
-            ]
-            embeddings = embedding_service.batch_embed_courses(course_texts)
-            
-            # Prepare vectors for upsert
-            vectors = []
-            for i, (course, embedding) in enumerate(zip(preprocessed_courses, embeddings)):
-                if embedding:
-                    vector_id = f"{course['code'].replace(' ', '_')}_{i}"
-                    metadata = {
-                        'course_code': course['code'],
-                        'course_title': course['title'],
-                        'credits': course['credit_hours'],
-                        'department': course['department'],
-                    }
-                    vectors.append((vector_id, embedding, metadata))
-            
-            if vectors:
-                vector_store.upsert_embeddings(vectors)
-                logger.info(f"✓ Uploaded {len(vectors)} course embeddings")
-        
-        # Initialize RAG pipeline
+
+        # Embedding service + RAG only if a key is configured.
+        # On serverless, we additionally skip the embedding upsert step on
+        # cold start because it can blow the 10–30s function budget.
         if settings.openai_api_key:
+            embedding_service = EmbeddingService(
+                api_key=settings.openai_api_key,
+                model="text-embedding-3-small"
+            )
+            logger.info("✓ Embedding service initialized")
+
+            if not settings.serverless and preprocessed_courses:
+                logger.info("Generating course embeddings...")
+                course_texts = [
+                    embedding_service.format_course_for_embedding(course)
+                    for course in preprocessed_courses
+                ]
+                embeddings = embedding_service.batch_embed_courses(course_texts)
+                vectors = []
+                for i, (course, embedding) in enumerate(zip(preprocessed_courses, embeddings)):
+                    if embedding:
+                        vector_id = f"{course['code'].replace(' ', '_')}_{i}"
+                        metadata = {
+                            'course_code': course['code'],
+                            'course_title': course['title'],
+                            'credits': course['credit_hours'],
+                            'department': course['department'],
+                        }
+                        vectors.append((vector_id, embedding, metadata))
+                if vectors:
+                    vector_store.upsert_embeddings(vectors)
+                    logger.info(f"✓ Uploaded {len(vectors)} course embeddings")
+
             rag_pipeline = RAGPipeline(
                 openai_api_key=settings.openai_api_key,
                 openai_model=settings.openai_model
             )
             logger.info("✓ RAG pipeline initialized")
         else:
-            logger.warning("⚠ OpenAI API key required for RAG pipeline")
-        
+            logger.info("ℹ OpenAI key absent — deterministic ScheduleBuilder is the only path")
+
         logger.info("=" * 60)
         logger.info("Backend initialization complete!")
         logger.info("=" * 60)
-    
+
     except Exception as e:
         logger.error(f"Failed to initialize services: {e}")
         raise
@@ -153,14 +157,17 @@ class ScheduleResponse(BaseModel):
     issues: List[str]
 
 
-@app.get("/health")
+@app.get("/api/health")
+@app.get("/health")  # local-dev alias
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint. Mounted at /api/health so it survives Vercel's
+    /api/* rewrite; /health is kept as a local-dev convenience."""
     return {
         "status": "healthy",
         "courses_loaded": len(preprocessed_courses) if preprocessed_courses else 0,
         "rag_ready": rag_pipeline is not None,
-        "embeddings_ready": embedding_service is not None
+        "embeddings_ready": embedding_service is not None,
+        "serverless": settings.serverless,
     }
 
 

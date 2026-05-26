@@ -1,0 +1,29 @@
+# Local virtualenvs (we install deps fresh on Vercel)
+backend/venv/
+.venv/
+venv/
+**/__pycache__/
+*.pyc
+
+# Built frontend artifacts (Vercel rebuilds)
+frontend/build/
+frontend/node_modules/
+node_modules/
+
+# Local-only files
+.env
+.env.local
+backend/.env
+*.log
+.DS_Store
+
+# Test scaffolding & docs not needed at runtime
+backend/test_system.py
+backend/app/scraper/test_scraper.py
+backend/app/scraper/examples.py
+backend/eval/
+
+# Old/stale docs
+SCRAPER_*.md
+DELIVERABLES.md
+FILES_OVERVIEW.txt

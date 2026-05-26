@@ -1,4 +1,5 @@
 """Scraper for UW Bothell Time Schedule (public course offerings)."""
+import os
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict, Optional
@@ -51,9 +52,14 @@ class UWScheduleScraper:
     def scrape_courses(self, url: Optional[str] = None) -> List[Dict]:
         """Scrape CSS courses from UW Bothell public time schedule.
 
-        Tries the live UW site first, falls back to cache, then sample data.
+        Tries the local cache first, then live scrape, then sample data.
         Every code path runs through `_validate_schema` so the rest of the
         pipeline never sees malformed course rows.
+
+        When `SMARTSCHED_SERVERLESS=1` is set (Vercel deploys do this), the
+        live-scrape step is skipped — serverless containers shouldn't reach
+        out to UW on every cold start, and the cache file is bundled with
+        the deployment anyway.
         """
         # Try cache first (valid for 24 hours)
         cached = self._load_cached_courses("bothell_css")
@@ -62,12 +68,15 @@ class UWScheduleScraper:
             logger.info(f"Loaded {len(cached)} courses from cache")
             return cached
 
-        # Scrape live
-        courses = self._scrape_live()
-        if courses:
-            courses = self._validate_schema(courses, source="live")
-            self.cache_courses(courses, "bothell_css")
-            return courses
+        # Scrape live — skipped on serverless cold starts.
+        if not os.environ.get("SMARTSCHED_SERVERLESS"):
+            courses = self._scrape_live()
+            if courses:
+                courses = self._validate_schema(courses, source="live")
+                self.cache_courses(courses, "bothell_css")
+                return courses
+        else:
+            logger.info("Serverless mode: skipping live scrape")
 
         # Fallback: any cache, or sample data
         fallback = self._load_cached_courses() or self._generate_sample_courses()
