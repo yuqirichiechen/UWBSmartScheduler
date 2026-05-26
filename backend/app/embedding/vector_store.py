@@ -30,23 +30,50 @@ class VectorStore:
             logger.warning("Pinecone credentials not provided, using in-memory mock storage")
     
     def _initialize_pinecone(self):
-        """Initialize Pinecone client."""
+        """Initialize Pinecone client.
+
+        Supports the modern v3+ client (`from pinecone import Pinecone`) and
+        falls back to the legacy v2 `pinecone.init()` API for environments
+        still pinned to the older release.
+        """
         try:
-            import pinecone
-            
+            # Modern v3+ API
+            try:
+                from pinecone import Pinecone, ServerlessSpec  # type: ignore
+
+                client = Pinecone(api_key=self.api_key)
+                existing = [idx["name"] for idx in client.list_indexes()]
+                if self.index_name not in existing:
+                    logger.info(f"Creating Pinecone index: {self.index_name}")
+                    client.create_index(
+                        name=self.index_name,
+                        dimension=1536,
+                        metric="cosine",
+                        spec=ServerlessSpec(
+                            cloud="aws",
+                            region=self.environment or "us-east-1",
+                        ),
+                    )
+                self.index = client.Index(self.index_name)
+                logger.info(f"Connected to Pinecone (v3) index: {self.index_name}")
+                return
+            except ImportError:
+                pass  # fall through to legacy
+            except AttributeError:
+                pass  # fall through to legacy
+
+            # Legacy v2 API
+            import pinecone  # type: ignore
             pinecone.init(api_key=self.api_key, environment=self.environment)
-            
-            # Get or create index
             if self.index_name not in pinecone.list_indexes():
-                logger.info(f"Creating index: {self.index_name}")
+                logger.info(f"Creating Pinecone (legacy) index: {self.index_name}")
                 pinecone.create_index(
                     name=self.index_name,
-                    dimension=1536,  # For OpenAI embeddings
-                    metric="cosine"
+                    dimension=1536,
+                    metric="cosine",
                 )
-            
             self.index = pinecone.Index(self.index_name)
-            logger.info(f"Connected to Pinecone index: {self.index_name}")
+            logger.info(f"Connected to Pinecone (legacy) index: {self.index_name}")
         except ImportError:
             logger.warning("Pinecone not installed, using in-memory storage")
         except Exception as e:
@@ -112,25 +139,32 @@ class VectorStore:
         
         try:
             if self.index:
-                # Use Pinecone
+                # Use Pinecone — response shape differs between v2 (dict) and
+                # v3 (QueryResponse object); normalize both.
                 results = self.index.query(
                     vector=query_vector,
                     top_k=top_k,
                     include_metadata=True
                 )
-                
+                raw_matches = (
+                    results.get('matches', []) if isinstance(results, dict)
+                    else getattr(results, 'matches', []) or []
+                )
+
                 matches = []
-                for match in results.get('matches', []):
-                    course_data = match.get('metadata', {})
+                for match in raw_matches:
+                    md = match.get('metadata', {}) if isinstance(match, dict) else (getattr(match, 'metadata', {}) or {})
+                    mid = match['id'] if isinstance(match, dict) else getattr(match, 'id', None)
+                    score = match['score'] if isinstance(match, dict) else getattr(match, 'score', 0.0)
                     matches.append({
-                        'id': match['id'],
-                        'score': match['score'],
-                        'course_code': course_data.get('course_code'),
-                        'course_title': course_data.get('course_title'),
-                        'section': course_data.get('section'),
-                        'metadata': course_data
+                        'id': mid,
+                        'score': score,
+                        'course_code': md.get('course_code'),
+                        'course_title': md.get('course_title'),
+                        'section': md.get('section'),
+                        'metadata': md,
                     })
-                
+
                 logger.info(f"Query returned {len(matches)} results from Pinecone")
                 return matches
             else:
@@ -259,11 +293,18 @@ class VectorStore:
         try:
             if self.index:
                 stats = self.index.describe_index_stats()
+                # v2 returns dict, v3 returns IndexDescription
+                if isinstance(stats, dict):
+                    vc = stats.get('total_vector_count', 0)
+                    dim = stats.get('dimension', 1536)
+                else:
+                    vc = getattr(stats, 'total_vector_count', 0)
+                    dim = getattr(stats, 'dimension', 1536)
                 return {
                     'index_name': self.index_name,
-                    'vector_count': stats.get('total_vector_count', 0),
-                    'dimension': stats.get('dimension', 1536),
-                    'storage_backend': 'pinecone'
+                    'vector_count': vc,
+                    'dimension': dim,
+                    'storage_backend': 'pinecone',
                 }
             else:
                 return {

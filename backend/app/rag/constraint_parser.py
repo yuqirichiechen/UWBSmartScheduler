@@ -29,6 +29,16 @@ class ConstraintParser:
             "time_windows": ConstraintParser._extract_time_windows(query),
             "no_online": ConstraintParser._extract_no_online(query)
         }
+
+        # "only Tue/Thu" or "only Tuesday" implies the remaining weekdays
+        # should be avoided — promote preferred_days to a hard avoid for the
+        # complement so the builder won't pick sections on Mon/Wed/Fri.
+        if re.search(r'\bonly\b', query.lower()) and constraints["preferred_days"]:
+            weekdays = {"M", "T", "W", "Th", "F"}
+            implied_avoid = sorted(weekdays - set(constraints["preferred_days"]))
+            existing = set(constraints["avoid_days"] or [])
+            constraints["avoid_days"] = sorted(existing | set(implied_avoid))
+            logger.info(f"'only' clause promoted preferred_days -> avoid_days {constraints['avoid_days']}")
         
         logger.info(f"Parsed query: '{query}'")
         logger.info(f"Extracted constraints: {constraints}")
@@ -99,97 +109,101 @@ class ConstraintParser:
         
         return None
     
+    # Order matters: longer keys first so "thursday" doesn't match "tuesday" prefix etc.
+    _DAY_WORDS = [
+        ('thursdays', 'Th'), ('thursday', 'Th'), ('thurs', 'Th'), ('thur', 'Th'), ('thu', 'Th'),
+        ('tuesdays', 'T'), ('tuesday', 'T'), ('tues', 'T'), ('tue', 'T'),
+        ('wednesdays', 'W'), ('wednesday', 'W'), ('weds', 'W'), ('wed', 'W'),
+        ('mondays', 'M'), ('monday', 'M'), ('mon', 'M'),
+        ('fridays', 'F'), ('friday', 'F'), ('fri', 'F'),
+        ('saturdays', 'S'), ('saturday', 'S'), ('sat', 'S'),
+        ('sundays', 'Su'), ('sunday', 'Su'), ('sun', 'Su'),
+    ]
+
+    @staticmethod
+    def _scan_days(text: str) -> List[str]:
+        """Return ordered list of day-codes mentioned in `text`.
+
+        Greedy word-boundary scan over the longer-first day word list so
+        substrings like 'tue' don't shadow 'tuesday' and 'thu' doesn't
+        match inside 'thursday'.
+        """
+        found: List[str] = []
+        consumed = [False] * len(text)
+        for word, code in ConstraintParser._DAY_WORDS:
+            for m in re.finditer(rf'\b{re.escape(word)}\b', text):
+                if any(consumed[m.start():m.end()]):
+                    continue
+                for i in range(m.start(), m.end()):
+                    consumed[i] = True
+                if code not in found:
+                    found.append(code)
+        return found
+
     @staticmethod
     def _extract_preferred_days(query: str) -> Optional[List[str]]:
-        """Extract preferred days from query.
-        
-        Args:
-            query: User query
-            
-        Returns:
-            List of preferred days or None
-        """
+        """Extract preferred days from query. Triggered by 'only', 'prefer',
+        'want', 'on', 'mostly', or explicit ranges like 'Tue/Thu'."""
         query_lower = query.lower()
-        days_map = {
-            'monday': 'M', 'mon': 'M',
-            'tuesday': 'T', 'tue': 'T', 'tues': 'T',
-            'wednesday': 'W', 'wed': 'W',
-            'thursday': 'Th', 'thurs': 'Th', 'thu': 'Th',
-            'friday': 'F', 'fri': 'F',
-            'saturday': 'S', 'sat': 'S',
-            'sunday': 'Su', 'sun': 'Su'
-        }
-        
-        preferred = []
-        
-        # Look for "come on", "only on", "prefer", "want"
-        patterns = [
-            r'(?:only|come|class)\s+(?:on\s+)?([MTWFSu\s,and]+)',
-            r'(?:prefer|want|schedule).*?(?:on\s+)?([MTWFSu\s,and]+)',
-            r'(tuesday.*?thursday)',
-        ]
 
-        for pattern in patterns:
-            match = re.search(pattern, query_lower)
-            if match:
-                days_text = match.group(1)
-                for day_name, day_code in days_map.items():
-                    if day_name in days_text:
-                        if day_code not in preferred:
-                            preferred.append(day_code)
-        
-        # Also check for direct day abbreviations
-        for day_code in ['M', 'T', 'W', 'F', 'Th', 'S']:
-            if re.search(rf'\b{day_code}\b', query):
-                if day_code not in preferred:
-                    preferred.append(day_code)
-        
-        result = sorted(list(set(preferred)))
-        if result:
-            logger.debug(f"Extracted preferred days: {result}")
-            return result
+        # If there's a positive trigger, scan the rest of the sentence after it.
+        # 'on' alone is too generic (it appears inside 'on Fridays' after a
+        # negation), so we require it to be preceded by an explicit verb.
+        triggers = [
+            r'\b(?:only|prefer|prefers?|want|wants?|mostly)\b',
+            r'\bcome(?:\s+to\s+campus)?\s+(?:on\s+)?',
+            r'\b(?:i\s+can|can)\s+do\b',
+        ]
+        for pat in triggers:
+            for m in re.finditer(pat, query_lower):
+                # Skip if a negation precedes this trigger AND there is no
+                # 'but' / 'except' clause between them flipping the polarity.
+                preceding = query_lower[max(0, m.start() - 40):m.start()]
+                neg_match = re.search(r"\b(?:no|not|don'?t|cannot|can'?t|avoid|skip|without)\b", preceding)
+                if neg_match:
+                    between = preceding[neg_match.end():]
+                    if not re.search(r"\b(?:but|except|however|though)\b", between):
+                        continue
+                fragment = query_lower[m.end():m.end() + 80]
+                # stop the scan if we hit another negation
+                fragment = re.split(r"\b(?:but|except|no|not|avoid|skip)\b", fragment, maxsplit=1)[0]
+                days = ConstraintParser._scan_days(fragment)
+                if days:
+                    logger.debug(f"Extracted preferred days: {days}")
+                    return sorted(days)
+
+        # Fallback: slash-separated abbreviations like "Tue/Thu" or "T/Th"
+        if re.search(r'\b(?:tue|thu|mon|wed|fri)[a-z]*\s*/\s*(?:tue|thu|mon|wed|fri)', query_lower):
+            days = ConstraintParser._scan_days(query_lower)
+            if days:
+                logger.debug(f"Extracted preferred days (slash form): {days}")
+                return sorted(days)
         return None
-    
+
     @staticmethod
     def _extract_avoid_days(query: str) -> Optional[List[str]]:
-        """Extract days to avoid from query.
-
-        Args:
-            query: User query
-
-        Returns:
-            List of days to avoid or None
-        """
+        """Extract days to avoid. Only scans the clause directly following a
+        negative trigger (can't / cannot / no / avoid / skip / not / without /
+        don't / no more) so that 'no Fridays but prefer Tuesday' doesn't put
+        Tuesday in the avoid list."""
         query_lower = query.lower()
-        days_map = {
-            'monday': 'M', 'mondays': 'M',
-            'tuesday': 'T', 'tuesdays': 'T',
-            'wednesday': 'W', 'wednesdays': 'W',
-            'thursday': 'Th', 'thursdays': 'Th',
-            'friday': 'F', 'fridays': 'F',
-            'saturday': 'S', 'saturdays': 'S',
-            'sunday': 'Su', 'sundays': 'Su',
-        }
-
-        avoid = []
-
-        # Match a negative trigger word, then capture everything up to the
-        # end of the sentence / next clause so we can scan it for day names.
-        trigger = re.search(
-            r"(?:can'?t|cannot|no|avoid|not|skip|don'?t|without)"
-            r"[\s\w,]*",
+        triggers = re.finditer(
+            r"\b(?:can'?t|cannot|no(?!t\s+at)|avoid|not(?!\s+at)|skip|don'?t|without)\b",
             query_lower,
         )
-        if trigger:
-            fragment = trigger.group(0)
-            for day_name, day_code in days_map.items():
-                if day_name in fragment and day_code not in avoid:
-                    avoid.append(day_code)
 
-        result = sorted(list(set(avoid)))
-        if result:
-            logger.debug(f"Extracted avoid days: {result}")
-            return result
+        avoid: List[str] = []
+        for trig in triggers:
+            # Scan the next ~40 characters or until a positive flip word.
+            tail = query_lower[trig.end():trig.end() + 60]
+            tail = re.split(r"\b(?:but|prefer|want|only|except|on)\b", tail, maxsplit=1)[0]
+            for code in ConstraintParser._scan_days(tail):
+                if code not in avoid:
+                    avoid.append(code)
+
+        if avoid:
+            logger.debug(f"Extracted avoid days: {avoid}")
+            return sorted(avoid)
         return None
     
     @staticmethod

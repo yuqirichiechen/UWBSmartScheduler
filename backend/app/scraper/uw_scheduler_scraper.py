@@ -52,23 +52,93 @@ class UWScheduleScraper:
         """Scrape CSS courses from UW Bothell public time schedule.
 
         Tries the live UW site first, falls back to cache, then sample data.
+        Every code path runs through `_validate_schema` so the rest of the
+        pipeline never sees malformed course rows.
         """
         # Try cache first (valid for 24 hours)
         cached = self._load_cached_courses("bothell_css")
         if cached:
+            cached = self._validate_schema(cached, source="cache")
             logger.info(f"Loaded {len(cached)} courses from cache")
             return cached
 
         # Scrape live
         courses = self._scrape_live()
         if courses:
+            courses = self._validate_schema(courses, source="live")
             self.cache_courses(courses, "bothell_css")
             return courses
 
         # Fallback: any cache, or sample data
         fallback = self._load_cached_courses() or self._generate_sample_courses()
+        fallback = self._validate_schema(fallback, source="fallback")
         logger.warning(f"Using fallback data: {len(fallback)} courses")
         return fallback
+
+    # ------------------------------------------------------------------
+    # Schema validation
+    # ------------------------------------------------------------------
+
+    REQUIRED_COURSE_FIELDS = ("code", "title", "credit_hours", "department", "sections")
+    REQUIRED_SECTION_FIELDS = ("section_number", "instructor", "meeting_times")
+    REQUIRED_MEETING_FIELDS = ("days", "start_time", "end_time")
+
+    def _validate_schema(self, courses: List[Dict], source: str) -> List[Dict]:
+        """Drop malformed courses and log loudly when fields are missing.
+
+        Proposal mitigation: "automated validation checks (expected field
+        counts, schema assertions) that alert us immediately if output
+        deviates."
+        """
+        if not isinstance(courses, list):
+            logger.error(f"[{source}] expected list of courses, got {type(courses).__name__}")
+            return []
+
+        clean: List[Dict] = []
+        for i, c in enumerate(courses):
+            if not isinstance(c, dict):
+                logger.warning(f"[{source}] course #{i} is {type(c).__name__}, dropping")
+                continue
+            missing = [k for k in self.REQUIRED_COURSE_FIELDS if k not in c]
+            if missing:
+                logger.warning(f"[{source}] {c.get('code','?')} missing fields {missing}, dropping")
+                continue
+            if not isinstance(c.get("sections"), list) or not c["sections"]:
+                logger.warning(f"[{source}] {c['code']} has no sections, dropping")
+                continue
+            # Validate sections (best-effort; keep course if at least one section is valid)
+            valid_sections = []
+            for s in c["sections"]:
+                if not isinstance(s, dict):
+                    continue
+                if any(k not in s for k in self.REQUIRED_SECTION_FIELDS):
+                    continue
+                if not isinstance(s.get("meeting_times"), list):
+                    continue
+                # Meeting times may be empty (async) — that's OK
+                ok = True
+                for mt in s["meeting_times"]:
+                    if not isinstance(mt, dict):
+                        ok = False
+                        break
+                    if any(k not in mt for k in self.REQUIRED_MEETING_FIELDS):
+                        ok = False
+                        break
+                if ok:
+                    valid_sections.append(s)
+            if not valid_sections:
+                logger.warning(f"[{source}] {c['code']} has no valid sections, dropping")
+                continue
+            cc = dict(c)
+            cc["sections"] = valid_sections
+            clean.append(cc)
+
+        dropped = len(courses) - len(clean)
+        if dropped:
+            logger.warning(f"[{source}] schema validation dropped {dropped}/{len(courses)} courses")
+        else:
+            logger.info(f"[{source}] schema validation: {len(clean)} courses OK")
+        return clean
 
     def scrape_all_courses(self, campus: str = "Bothell", quarter: Optional[str] = None,
                            departments: Optional[List[str]] = None) -> List[Dict]:

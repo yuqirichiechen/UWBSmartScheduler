@@ -1,0 +1,87 @@
+[
+  {
+    "id": "q1",
+    "query": "No Friday classes, max 14 credits",
+    "completed": ["CSS 143"],
+    "expected_constraints": {
+      "avoid_days": ["F"],
+      "max_credits": 14
+    }
+  },
+  {
+    "id": "q2",
+    "query": "CSS 342 and CSS 385, keep it under 12 credits",
+    "completed": ["CSS 143", "CSS 211"],
+    "expected_constraints": {
+      "required_courses": ["CSS 342", "CSS 385"],
+      "max_credits": 12
+    }
+  },
+  {
+    "id": "q3",
+    "query": "Only Tuesday and Thursday, no online",
+    "completed": ["CSS 143"],
+    "expected_constraints": {
+      "preferred_days": ["T", "Th"],
+      "no_online": true
+    }
+  },
+  {
+    "id": "q4",
+    "query": "Morning classes only, at least 10 credits",
+    "completed": [],
+    "expected_constraints": {
+      "min_credits": 10
+    }
+  },
+  {
+    "id": "q5",
+    "query": "I work 30 hours a week, give me afternoon courses, max 12 credits",
+    "completed": ["CSS 143", "CSS 211"],
+    "expected_constraints": {
+      "max_credits": 12
+    }
+  },
+  {
+    "id": "q6",
+    "query": "Cannot do Mondays or Wednesdays",
+    "completed": ["CSS 143"],
+    "expected_constraints": {
+      "avoid_days": ["M", "W"]
+    }
+  },
+  {
+    "id": "q7",
+    "query": "CSS core requirements, in-person, no more than 15 credits",
+    "completed": ["CSS 143", "CSS 211"],
+    "expected_constraints": {
+      "max_credits": 15,
+      "no_online": true
+    }
+  },
+  {
+    "id": "q8",
+    "query": "Need at least 12 credits, prefer evening sections",
+    "completed": ["CSS 143"],
+    "expected_constraints": {
+      "min_credits": 12
+    }
+  },
+  {
+    "id": "q9",
+    "query": "Avoid Friday, include CSS 360",
+    "completed": ["CSS 143", "CSS 211", "CSS 342"],
+    "expected_constraints": {
+      "avoid_days": ["F"],
+      "required_courses": ["CSS 360"]
+    }
+  },
+  {
+    "id": "q10",
+    "query": "Schedule me for 15 credits, no Fridays, prefer Tuesday/Thursday",
+    "completed": ["CSS 143", "CSS 211"],
+    "expected_constraints": {
+      "avoid_days": ["F"]
+    }
+  }
+]

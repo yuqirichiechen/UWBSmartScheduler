@@ -8,7 +8,7 @@ import json
 
 from app.config import settings
 from app.utils import setup_logging, PrerequisiteGraph
-from app.rag import ConstraintParser, RAGPipeline, ConflictChecker
+from app.rag import ConstraintParser, RAGPipeline, ConflictChecker, ScheduleBuilder
 from app.embedding import EmbeddingService, VectorStore
 from app.scraper import UWScheduleScraper
 
@@ -175,93 +175,78 @@ async def get_schedule(request: ScheduleRequest):
         Schedule recommendations with validation
     """
     try:
-        if not rag_pipeline:
-            raise HTTPException(
-                status_code=500,
-                detail="RAG pipeline not initialized. Please provide OpenAI API key."
-            )
-        
         if not preprocessed_courses:
             raise HTTPException(
                 status_code=500,
                 detail="No courses loaded. Please ensure course data is available."
             )
-        
-        # Parse constraints from query
+
+        # 1. Parse constraints from query
         constraints = ConstraintParser.parse_query(request.query)
         logger.info(f"Constraint parsing result: {json.dumps(constraints, indent=2, default=str)}")
 
-        # Retrieve courses using vector store (semantic search) when available,
-        # otherwise fall back to simple constraint-based filtering.
+        # 2. Retrieve courses using vector store (semantic search) when available,
+        #    otherwise fall back to simple constraint-based filtering.
         retrieved_courses = _retrieve_courses(
             request.query, constraints, preprocessed_courses,
             embedding_service, vector_store
         )
         logger.info(f"Retrieved {len(retrieved_courses)} courses matching constraints")
-        
-        # Expand completed courses by inferring transitive prerequisites.
-        # e.g. completing CSS 342 implies CSS 211, CSS 161, CSS 143 are done.
+
+        # 3. Expand completed courses by inferring transitive prerequisites.
+        #    e.g. completing CSS 342 implies CSS 211, CSS 161, CSS 143 are done.
         completed = request.completed_courses or []
         if prereq_graph and completed:
             completed = prereq_graph.infer_completed(completed)
             logger.info(f"Expanded completed courses: {completed}")
 
-        # Filter out courses the student already completed
+        # 4. Drop courses the student already completed before building
         completed_set = set(c.upper().replace(' ', '') for c in completed)
         eligible_courses = [
             c for c in retrieved_courses
             if c['code'].replace(' ', '').upper() not in completed_set
         ]
+        logger.info(f"{len(eligible_courses)} courses eligible after completion filter")
 
-        # Pre-filter sections on avoided days so the LLM only sees valid options
-        avoid_days = set(constraints.get('avoid_days') or [])
-        if avoid_days:
-            filtered = []
-            for course in eligible_courses:
-                good_sections = [
-                    s for s in course.get('sections', [])
-                    if not any(
-                        d in avoid_days
-                        for mt in s.get('meeting_times', [])
-                        for d in (mt.get('days') or [])
-                    )
-                ]
-                if good_sections:
-                    c = dict(course)
-                    c['sections'] = good_sections
-                    filtered.append(c)
-            eligible_courses = filtered
-
-        logger.info(f"Filtered to {len(eligible_courses)} eligible courses")
-
-        recommendation = rag_pipeline.recommend_schedule(
+        # 5. Build schedule — deterministic builder is primary, RAG is optional.
+        hydrated_courses, message = ScheduleBuilder.build(
             constraints=constraints,
-            retrieved_courses=eligible_courses,
-            completed_courses=completed
+            courses=eligible_courses,
+            completed_courses=completed,
         )
-        
-        # Hydrate course codes into full course objects for the frontend
-        course_codes = recommendation.get("recommended_courses", [])
-        hydrated_courses = _hydrate_courses(course_codes, eligible_courses, constraints)
 
-        # Validate schedule constraints (use hydrated courses which are already filtered)
+        # Optional RAG pass: only runs if an OpenAI key was configured at
+        # startup. It currently overrides the deterministic recommendation
+        # message only — the builder remains the source of truth for sections.
+        if rag_pipeline:
+            try:
+                rec = rag_pipeline.recommend_schedule(
+                    constraints=constraints,
+                    retrieved_courses=eligible_courses,
+                    completed_courses=completed,
+                )
+                if rec.get("recommendation"):
+                    message = rec["recommendation"]
+            except Exception as e:  # pragma: no cover — best-effort augmentation
+                logger.warning(f"RAG augmentation failed, sticking with deterministic build: {e}")
+
+        # Validate schedule constraints (informational — builder already
+        # enforces them, but we surface any residual issues to the UI).
         recommended_sections = _parse_sections_from_hydrated(hydrated_courses)
-
         is_valid, issues = ConflictChecker.validate_schedule_constraints(
             recommended_sections,
             constraints,
-            completed
+            completed,
         )
-
         logger.info(f"Schedule validation: valid={is_valid}, issues={len(issues)}")
 
         return ScheduleResponse(
             query=request.query,
-            recommendations=recommendation.get("recommendation", "No recommendation generated"),
+            recommendations=message,
             constraints=constraints,
             recommended_courses=hydrated_courses,
             is_valid=is_valid,
-            issues=issues
+            issues=issues,
         )
     
     except HTTPException:
