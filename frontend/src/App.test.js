@@ -7,6 +7,28 @@ jest.mock('./services/api');
 
 beforeEach(() => {
   scheduleAPI.healthCheck = jest.fn().mockResolvedValue({ status: 'healthy' });
+  scheduleAPI.getCourses = jest.fn().mockResolvedValue({
+    count: 1,
+    status: 'ready',
+    courses: [
+      {
+        code: 'CSS 143',
+        title: 'Computer Programming II',
+        credit_hours: 5,
+        department: 'CSS',
+        prerequisites: ['CSS 142'],
+        sections: [
+          {
+            section_number: 'A',
+            instructor: 'Dr. C',
+            meeting_times: [
+              { days: ['M', 'W'], start_time: '10:00', end_time: '11:30', location: 'UWB 3' },
+            ],
+          },
+        ],
+      },
+    ],
+  });
   scheduleAPI.getSchedule = jest.fn().mockResolvedValue({
     query: 'CSS core, no Friday',
     recommendations: 'Selected 2 courses (9 credits): CSS 112, CSS 225.',
@@ -85,4 +107,31 @@ test('submitting a query renders the resulting schedule', async () => {
   expect(screen.getByText(/^9 credits$/)).toBeInTheDocument();
   // No-conflicts badge
   expect(screen.getByText(/No Conflicts/i)).toBeInTheDocument();
+
+  // Tabs are present and Calendar is the default
+  expect(screen.getByRole('tab', { name: /Calendar/i, selected: true })).toBeInTheDocument();
+  expect(screen.getByRole('tab', { name: /Sections/i, selected: false })).toBeInTheDocument();
+
+  // Switching to Sections renders the course rows
+  fireEvent.click(screen.getByRole('tab', { name: /Sections/i }));
+  await waitFor(() =>
+    expect(screen.getByRole('tab', { name: /Sections/i, selected: true })).toBeInTheDocument()
+  );
+});
+
+test('catalog nav loads and shows available courses', async () => {
+  render(<App />);
+  await waitFor(() => expect(screen.getByText(/^Connected$/)).toBeInTheDocument());
+
+  fireEvent.click(screen.getByRole('button', { name: /^Catalog$/ }));
+
+  await waitFor(() =>
+    expect(scheduleAPI.getCourses).toHaveBeenCalled()
+  );
+
+  // The mocked course shows up
+  await waitFor(() => {
+    expect(screen.getByText('CSS 143')).toBeInTheDocument();
+    expect(screen.getByText(/Computer Programming II/)).toBeInTheDocument();
+  });
 });

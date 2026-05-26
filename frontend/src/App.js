@@ -3,6 +3,7 @@ import './styles/App.css';
 import QueryInput from './components/QueryInput';
 import ScheduleOutput from './components/ScheduleOutput';
 import CompletedCourses from './components/CompletedCourses';
+import CourseCatalog from './components/CourseCatalog';
 import { scheduleAPI } from './services/api';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
   const [error, setError] = useState(null);
   const [completedCourses, setCompletedCourses] = useState([]);
   const [apiStatus, setApiStatus] = useState('checking');
+  const [view, setView] = useState('schedule'); // 'schedule' | 'catalog'
 
   useEffect(() => {
     const checkAPI = async () => {
@@ -28,6 +30,7 @@ function App() {
   const handleQuery = async (query) => {
     setLoading(true);
     setError(null);
+    setView('schedule');
     try {
       const response = await scheduleAPI.getSchedule(query, completedCourses);
       setSchedule(response);
@@ -51,8 +54,28 @@ function App() {
           <div className="header-main">
             <h1>Smart<span className="brand-dot">Scheduler</span></h1>
           </div>
+
+          {apiStatus !== 'error' && (
+            <nav className="header-nav" aria-label="Primary">
+              <button
+                type="button"
+                className={`nav-link ${view === 'schedule' ? 'active' : ''}`}
+                onClick={() => setView('schedule')}
+              >
+                Schedule
+              </button>
+              <button
+                type="button"
+                className={`nav-link ${view === 'catalog' ? 'active' : ''}`}
+                onClick={() => setView('catalog')}
+              >
+                Catalog
+              </button>
+            </nav>
+          )}
+
           {apiStatus === 'checking' && (
-            <div className="status checking">Connecting...</div>
+            <div className="status checking">Connecting</div>
           )}
           {apiStatus === 'ready' && (
             <div className="status ready">Connected</div>
@@ -77,7 +100,7 @@ function App() {
             </div>
           )}
 
-          {apiStatus !== 'error' && (
+          {apiStatus !== 'error' && view === 'schedule' && (
             <>
               {!schedule && !loading && (
                 <section className="hero">
@@ -111,6 +134,10 @@ function App() {
                 <ScheduleOutput schedule={schedule} />
               )}
             </>
+          )}
+
+          {apiStatus !== 'error' && view === 'catalog' && (
+            <CourseCatalog />
           )}
         </div>
       </main>

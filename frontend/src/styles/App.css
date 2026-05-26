@@ -47,6 +47,38 @@
   font-weight: 600;
 }
 
+/* Header nav */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto 0 24px;
+}
+
+.nav-link {
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: var(--bg-sunken);
+}
+
+.nav-link.active {
+  color: var(--text);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Status pill */
 .status {
   font-family: var(--font-sans);
@@ -224,7 +256,17 @@
 
 /* -------- Responsive -------- */
 @media (max-width: 720px) {
-  .header-content { padding: 12px 18px; }
+  .header-content {
+    padding: 12px 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header-nav {
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
+    justify-content: center;
+  }
   .App-main { padding: 32px 18px 64px; }
   .container { gap: 22px; }
   .hero h2 { font-size: 2rem; }
