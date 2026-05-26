@@ -4,6 +4,7 @@ import QueryInput from './components/QueryInput';
 import ScheduleOutput from './components/ScheduleOutput';
 import CompletedCourses from './components/CompletedCourses';
 import CourseCatalog from './components/CourseCatalog';
+import YearPlanner from './components/YearPlanner';
 import { scheduleAPI } from './services/api';
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   const [error, setError] = useState(null);
   const [completedCourses, setCompletedCourses] = useState([]);
   const [apiStatus, setApiStatus] = useState('checking');
-  const [view, setView] = useState('schedule'); // 'schedule' | 'catalog'
+  const [view, setView] = useState('schedule'); // 'schedule' | 'catalog' | 'calendar'
 
   useEffect(() => {
     const checkAPI = async () => {
@@ -70,6 +71,13 @@ function App() {
                 onClick={() => setView('catalog')}
               >
                 Catalog
+              </button>
+              <button
+                type="button"
+                className={`nav-link ${view === 'calendar' ? 'active' : ''}`}
+                onClick={() => setView('calendar')}
+              >
+                Calendar
               </button>
             </nav>
           )}
@@ -138,6 +146,10 @@ function App() {
 
           {apiStatus !== 'error' && view === 'catalog' && (
             <CourseCatalog />
+          )}
+
+          {apiStatus !== 'error' && view === 'calendar' && (
+            <YearPlanner />
           )}
         </div>
       </main>

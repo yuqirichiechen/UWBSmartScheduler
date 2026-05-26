@@ -135,3 +135,44 @@ test('catalog nav loads and shows available courses', async () => {
     expect(screen.getByText(/Computer Programming II/)).toBeInTheDocument();
   });
 });
+
+test('calendar nav opens year planner with quarter tabs', async () => {
+  // Clean storage so the planner starts empty
+  localStorage.removeItem('smartsched.yearplan.v1');
+
+  render(<App />);
+  await waitFor(() => expect(screen.getByText(/^Connected$/)).toBeInTheDocument());
+
+  fireEvent.click(screen.getByRole('button', { name: /^Calendar$/ }));
+
+  // Title + the four quarter tabs
+  await waitFor(() => {
+    expect(screen.getByText(/Year planner/i)).toBeInTheDocument();
+  });
+  expect(screen.getByRole('tab', { name: /Autumn 2026/i, selected: true })).toBeInTheDocument();
+  expect(screen.getByRole('tab', { name: /Winter 2027/i })).toBeInTheDocument();
+  expect(screen.getByRole('tab', { name: /Spring 2027/i })).toBeInTheDocument();
+  expect(screen.getByRole('tab', { name: /Summer 2027/i })).toBeInTheDocument();
+
+  // Empty state CTA
+  expect(screen.getByText(/No courses planned/i)).toBeInTheDocument();
+
+  // Open course picker, add the catalog course
+  fireEvent.click(screen.getByRole('button', { name: /\+ Add your first course/i }));
+  await waitFor(() =>
+    expect(screen.getByPlaceholderText(/Search courses/i)).toBeInTheDocument()
+  );
+
+  // Wait for catalog to load and click the row
+  await waitFor(() => expect(scheduleAPI.getCourses).toHaveBeenCalled());
+  await waitFor(() => {
+    expect(screen.getByText('CSS 143')).toBeInTheDocument();
+  });
+  fireEvent.click(screen.getByText('CSS 143'));
+
+  // It should now appear in the planner sections list with its credit count
+  await waitFor(() => {
+    // "1 course" stat
+    expect(screen.getByText(/^course$/i)).toBeInTheDocument();
+  });
+});

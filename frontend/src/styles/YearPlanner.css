@@ -1,0 +1,400 @@
+/* ============================================
+   Year Planner — multi-quarter manual schedule
+   ============================================ */
+
+.planner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.planner-header {
+  padding: 0 4px;
+}
+
+.planner-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.planner-sub {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+/* ---- Quarter tabs ---- */
+.quarter-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: var(--bg-sunken);
+  padding: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.quarter-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-sans);
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+  min-height: 64px;
+}
+
+.quarter-tab:hover {
+  background: var(--bg-surface);
+}
+
+.quarter-tab.active {
+  background: var(--bg-surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.quarter-tab-label {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.quarter-tab-count {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  align-self: flex-start;
+}
+
+.quarter-tab-optional {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ---- Summary strip ---- */
+.quarter-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.quarter-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.quarter-summary-stat strong {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.quarter-summary-dot { color: var(--text-faint); }
+
+.quarter-summary-status {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quarter-summary-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.quarter-summary-status.valid {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.quarter-summary-status.invalid {
+  color: var(--error);
+  background: var(--error-soft);
+}
+
+.quarter-summary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.planner-action-btn {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.2s ease;
+  border: 1px solid transparent;
+  letter-spacing: -0.005em;
+}
+
+.planner-action-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.planner-action-btn.primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: 0 3px 12px var(--accent-glow);
+}
+
+.planner-action-btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.planner-action-btn.ghost:hover {
+  background: var(--bg-sunken);
+  color: var(--text);
+}
+
+.planner-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---- Course picker dropdown ---- */
+.course-picker {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: fadeInUp 0.18s ease-out;
+}
+
+.course-picker-search {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.course-picker-search input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.course-picker-search input::placeholder {
+  color: var(--text-faint);
+}
+
+.course-picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.course-picker-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.course-picker-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-sans);
+  transition: background 0.12s ease;
+}
+
+.course-picker-item:hover { background: var(--bg-sunken); }
+
+.course-picker-list li:last-child .course-picker-item { border-bottom: none; }
+
+.course-picker-code {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--accent);
+  letter-spacing: -0.005em;
+}
+
+.course-picker-title {
+  font-size: 0.86rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-picker-cr {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* ---- Section selector inside planner row ---- */
+.section-select {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.section-select:hover {
+  border-color: var(--accent);
+}
+
+.section-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Row remove button */
+.planner-row .course-row-right {
+  position: relative;
+}
+
+.planner-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, color 0.12s ease;
+  margin-top: 2px;
+}
+
+.planner-remove:hover {
+  background: var(--error-soft);
+  color: var(--error);
+}
+
+/* ---- Empty quarter ---- */
+.planner-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 56px 24px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.planner-empty-mark {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: var(--text-faint);
+  line-height: 1;
+}
+
+.planner-empty p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.planner-empty p strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.planner-section-list {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 720px) {
+  .planner-title { font-size: 1.6rem; }
+  .quarter-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .quarter-summary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .quarter-summary-actions {
+    width: 100%;
+  }
+  .planner-action-btn {
+    flex: 1;
+    text-align: center;
+  }
+  .course-picker-item {
+    grid-template-columns: 80px 1fr auto;
+  }
+}
