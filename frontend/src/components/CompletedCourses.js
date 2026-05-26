@@ -28,43 +28,43 @@ function CompletedCourses({ onUpdate }) {
   };
 
   return (
-    <div className="completed-courses-container">
-      <h3>Completed Courses (for prerequisite checking)</h3>
-      
-      <div className="course-input-group">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value.toUpperCase())}
-          onKeyPress={handleKeyPress}
-          placeholder="e.g., CSS 143"
-          className="course-input"
-        />
-        <button onClick={handleAddCourse} className="add-course-btn">
-          + Add
-        </button>
+    <div className="completed-courses">
+      <div className="completed-label">
+        <span className="completed-label-text">Already completed</span>
+        <span className="completed-label-hint">used to gate prerequisites</span>
       </div>
 
-      {courses.length > 0 && (
-        <div className="courses-list">
-          {courses.map((course) => (
-            <div key={course} className="course-tag">
-              <span>{course}</span>
-              <button
-                onClick={() => handleRemoveCourse(course)}
-                className="remove-btn"
-                title="Remove course"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="completed-row">
+        {courses.map((course) => (
+          <span key={course} className="course-tag">
+            {course}
+            <button
+              onClick={() => handleRemoveCourse(course)}
+              className="remove-btn"
+              title={`Remove ${course}`}
+              aria-label={`Remove ${course}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
 
-      {courses.length === 0 && (
-        <p className="no-courses-text">No completed courses added yet</p>
-      )}
+        <span className="course-input-wrap">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value.toUpperCase())}
+            onKeyPress={handleKeyPress}
+            placeholder={courses.length ? 'Add another…' : 'e.g. CSS 143'}
+            className="course-input"
+          />
+          {input.trim() && (
+            <button onClick={handleAddCourse} className="add-course-btn">
+              add
+            </button>
+          )}
+        </span>
+      </div>
     </div>
   );
 }

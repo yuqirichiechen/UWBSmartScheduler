@@ -10,6 +10,7 @@ function ScheduleOutput({ schedule }) {
   const {
     query,
     recommended_courses = [],
+    recommendations,
     is_valid,
     issues = [],
   } = schedule;
@@ -19,89 +20,104 @@ function ScheduleOutput({ schedule }) {
   );
 
   return (
-    <div className="schedule-output-container">
-      <div className="output-header">
-        <div className="header-content">
-          <h2>Your Schedule</h2>
+    <div className="schedule-output">
+      {/* Header */}
+      <header className="schedule-header">
+        <div className="schedule-header-top">
+          <div>
+            <h2 className="schedule-title">Your schedule</h2>
+            {query && <p className="query-echo">“{query}”</p>}
+          </div>
           <div className="header-meta">
             {totalCredits > 0 && (
               <span className="credit-total">{totalCredits} credits</span>
             )}
-            <div className={`status-badge ${is_valid ? 'valid' : 'invalid'}`}>
+            <span className={`status-badge ${is_valid ? 'valid' : 'invalid'}`}>
               {is_valid ? 'No Conflicts' : 'Has Issues'}
-            </div>
+            </span>
           </div>
         </div>
-        <p className="query-echo">{query}</p>
-      </div>
 
+        {recommendations && (
+          <p className="schedule-summary">{recommendations}</p>
+        )}
+      </header>
+
+      {/* Issues */}
       {issues && issues.length > 0 && (
-        <div className="issues-section">
-          <h3>Scheduling Issues</h3>
+        <section className="issues-section">
+          <h3>Scheduling issues</h3>
           <ul className="issues-list">
-            {issues.map((issue, index) => (
-              <li key={index}>{issue}</li>
-            ))}
+            {issues.map((issue, i) => <li key={i}>{issue}</li>)}
           </ul>
-        </div>
+        </section>
       )}
 
-      {recommended_courses && recommended_courses.length > 0 && (
+      {recommended_courses && recommended_courses.length > 0 ? (
         <>
           <ScheduleCalendar recommendedCourses={recommended_courses} />
 
-          <div className="course-details">
-            <h3>Course Details</h3>
-            <div className="courses-grid">
+          <section className="course-list">
+            <h3 className="section-eyebrow">Selected sections</h3>
+            <ul className="course-rows">
               {recommended_courses.map((course, idx) => (
-                <div key={idx} className="course-card">
-                  <div className="course-card-top">
-                    <h4>{course.code}</h4>
-                    <span className="credits">{course.credits} cr</span>
-                  </div>
-                  <p className="course-title">{course.title}</p>
-
-                  {course.sections && course.sections.length > 0 && (
-                    <div className="sections">
-                      {course.sections.map((section, sidx) => (
-                        <div key={sidx} className="section">
-                          <div className="section-top">
-                            <span className="section-num">Sec {section.section_number}</span>
-                            <span className="instructor">{section.instructor || 'TBA'}</span>
-                          </div>
-                          {section.meeting_times && section.meeting_times.map((mt, mtidx) => (
-                            <div key={mtidx} className="meeting-line">
-                              <span className="meeting-days">
-                                {(Array.isArray(mt.days) ? mt.days : [mt.days])
-                                  .map(d => DAY_NAMES[d] || d).join(' / ')}
-                              </span>
-                              <span className="meeting-time">{formatTimeStr(mt.start_time)} - {formatTimeStr(mt.end_time)}</span>
-                              <span className="meeting-loc">{mt.location || section.location || 'TBA'}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {course.prerequisites && course.prerequisites.length > 0 && (
-                    <div className="prerequisites">
-                      Prereqs: {course.prerequisites.join(', ')}
-                    </div>
-                  )}
-                </div>
+                <CourseRow key={idx} course={course} />
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         </>
-      )}
-
-      {(!recommended_courses || recommended_courses.length === 0) && (
+      ) : (
         <div className="no-courses-message">
-          <p>No courses could be recommended. Try adjusting your constraints.</p>
+          <p>No courses could be recommended. Try relaxing a constraint.</p>
         </div>
       )}
     </div>
+  );
+}
+
+function CourseRow({ course }) {
+  const section = course.sections && course.sections[0];
+  const meeting = section && section.meeting_times && section.meeting_times[0];
+
+  return (
+    <li className="course-row">
+      <div className="course-row-left">
+        <div className="course-code">{course.code}</div>
+        <div className="course-row-title">{course.title}</div>
+        {course.prerequisites && course.prerequisites.length > 0 && (
+          <div className="course-row-prereqs">
+            requires {course.prerequisites.join(', ')}
+          </div>
+        )}
+      </div>
+
+      <div className="course-row-meeting">
+        {section && (
+          <span className="section-pill">Sec {section.section_number}</span>
+        )}
+        {meeting && meeting.days && (
+          <span className="meeting-days">
+            {(Array.isArray(meeting.days) ? meeting.days : [meeting.days])
+              .map(d => DAY_NAMES[d] || d).join(' · ')}
+          </span>
+        )}
+        {meeting && (
+          <span className="meeting-time">
+            {formatTimeStr(meeting.start_time)} – {formatTimeStr(meeting.end_time)}
+          </span>
+        )}
+      </div>
+
+      <div className="course-row-right">
+        <span className="course-credits">{course.credits} cr</span>
+        <span className="course-instructor">
+          {section ? (section.instructor || 'TBA') : 'TBA'}
+        </span>
+        <span className="course-location">
+          {(meeting && meeting.location) || (section && section.location) || 'TBA'}
+        </span>
+      </div>
+    </li>
   );
 }
 

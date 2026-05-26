@@ -6,12 +6,12 @@ const DAY_SHORT = { Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: '
 const DAY_ABBREVIATIONS = { M: 'Monday', T: 'Tuesday', W: 'Wednesday', Th: 'Thursday', F: 'Friday' };
 
 const COURSE_COLORS = [
-  { bg: 'rgba(249,112,102,0.22)', border: 'rgba(249,112,102,0.45)', text: '#f97066' },
-  { bg: 'rgba(45,212,191,0.18)',  border: 'rgba(45,212,191,0.45)',  text: '#2dd4bf' },
-  { bg: 'rgba(167,139,250,0.18)', border: 'rgba(167,139,250,0.45)', text: '#a78bfa' },
-  { bg: 'rgba(251,191,36,0.18)',  border: 'rgba(251,191,36,0.45)',  text: '#fbbf24' },
-  { bg: 'rgba(56,189,248,0.18)',  border: 'rgba(56,189,248,0.45)',  text: '#38bdf8' },
-  { bg: 'rgba(251,113,133,0.18)', border: 'rgba(251,113,133,0.45)', text: '#fb7185' },
+  { bg: 'rgba(204,107,95,0.12)',  border: 'rgba(204,107,95,0.35)', text: '#a8513e' }, // coral
+  { bg: 'rgba(79,155,138,0.12)',  border: 'rgba(79,155,138,0.35)', text: '#3a7a6a' }, // teal
+  { bg: 'rgba(124,108,176,0.12)', border: 'rgba(124,108,176,0.35)', text: '#5e4f8c' }, // violet
+  { bg: 'rgba(193,145,57,0.13)',  border: 'rgba(193,145,57,0.35)', text: '#8e6720' }, // amber
+  { bg: 'rgba(192,96,107,0.12)',  border: 'rgba(192,96,107,0.35)', text: '#974048' }, // rose
+  { bg: 'rgba(81,135,171,0.12)',  border: 'rgba(81,135,171,0.35)', text: '#386585' }, // sky
 ];
 
 const START_HOUR = 8;

@@ -1,269 +1,265 @@
 /* ============================================
-   Schedule Output — Results Display
+   Schedule output — flat rows, calendar-first
    ============================================ */
 
-.schedule-output-container {
+.schedule-output {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   animation: fadeInUp 0.5s ease-out;
 }
 
-/* Header */
-.output-header {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
+/* ---- Header strip ---- */
+.schedule-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 4px;
 }
 
-.output-header .header-content {
+.schedule-header-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.output-header h2 {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text);
+.schedule-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1.1;
   letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.query-echo {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  max-width: 520px;
 }
 
 .header-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .credit-total {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-secondary);
-  background: var(--bg-elevated);
-  padding: 4px 12px;
-  border-radius: 100px;
+  background: var(--bg-surface);
+  padding: 4px 10px;
+  border-radius: 999px;
   border: 1px solid var(--border);
 }
 
 .status-badge {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.72rem;
   font-weight: 500;
-  padding: 5px 14px;
-  border-radius: 100px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .status-badge.valid {
   color: var(--success);
-  background: var(--success-dim);
-  border: 1px solid rgba(52, 211, 153, 0.2);
+  background: var(--success-soft);
 }
 
 .status-badge.invalid {
   color: var(--error);
-  background: var(--error-dim);
-  border: 1px solid rgba(248, 113, 113, 0.2);
+  background: var(--error-soft);
 }
 
-.query-echo {
-  color: var(--text-dim);
-  font-size: 0.82rem;
-  font-style: italic;
-  line-height: 1.4;
+.schedule-summary {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  max-width: 640px;
+  padding-top: 2px;
 }
 
-/* Issues */
+/* ---- Issues ---- */
 .issues-section {
-  background: var(--warning-dim);
-  border: 1px solid rgba(251, 191, 36, 0.2);
+  background: var(--warning-soft);
+  border: 1px solid rgba(185, 122, 42, 0.18);
+  border-left: 3px solid var(--warning);
   border-radius: var(--radius);
-  padding: 16px 20px;
+  padding: 14px 18px;
 }
 
 .issues-section h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--warning);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 10px;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
 }
 
 .issues-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .issues-list li {
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  padding: 4px 0 4px 20px;
+  font-size: 0.88rem;
+  padding: 3px 0 3px 18px;
   position: relative;
+  line-height: 1.45;
 }
 
 .issues-list li::before {
-  content: '!';
+  content: '•';
   position: absolute;
-  left: 0;
-  top: 4px;
-  width: 14px;
-  height: 14px;
-  background: rgba(251, 191, 36, 0.2);
-  border-radius: 50%;
-  font-size: 0.65rem;
-  font-weight: 700;
+  left: 4px;
   color: var(--warning);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Course detail cards */
-.course-details {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-}
-
-.course-details h3 {
-  font-family: var(--font-display);
-  font-size: 0.82rem;
+/* ---- Course rows ---- */
+.section-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
   font-weight: 500;
-  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
 
-.courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-}
-
-.course-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  transition: border-color 0.2s, box-shadow 0.25s;
-  animation: fadeInUp 0.4s ease-out both;
-}
-
-.course-card:nth-child(1) { animation-delay: 0.05s; }
-.course-card:nth-child(2) { animation-delay: 0.1s; }
-.course-card:nth-child(3) { animation-delay: 0.15s; }
-.course-card:nth-child(4) { animation-delay: 0.2s; }
-
-.course-card:hover {
-  border-color: var(--border-light);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-}
-
-.course-card .course-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 4px;
-}
-
-.course-card .course-card-top h4 {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.course-card .credits {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  background: var(--bg-surface);
-  padding: 2px 8px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
-}
-
-.course-card .course-title {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 14px;
-}
-
-/* Sections */
-.course-card .sections {
+.course-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
-.course-card .section {
-  background: var(--bg-surface);
+.course-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  overflow: hidden;
 }
 
-.course-card .section-top {
-  display: flex;
-  justify-content: space-between;
+.course-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(220px, 1fr) minmax(150px, 0.9fr);
   align-items: center;
-  margin-bottom: 8px;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
 }
 
-.course-card .section-num {
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--indigo);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
+.course-row:last-child { border-bottom: none; }
+.course-row:hover { background: var(--bg-sunken); }
 
-.course-card .instructor {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-}
-
-.course-card .meeting-line {
+.course-row-left {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.8rem;
-  padding: 3px 0;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-.course-card .meeting-days {
+.course-code {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
   font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -0.005em;
+}
+
+.course-row-title {
+  font-size: 0.88rem;
   color: var(--text);
-  min-width: 70px;
+  line-height: 1.35;
 }
 
-.course-card .meeting-time {
+.course-row-prereqs {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.course-row-meeting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
-.course-card .meeting-loc {
-  color: var(--text-dim);
-  font-size: 0.75rem;
-  margin-left: auto;
+.section-pill {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  color: var(--text-secondary);
 }
 
-.course-card .prerequisites {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+.meeting-days {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.meeting-time {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.course-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: right;
+  min-width: 0;
+}
+
+.course-credits {
+  font-family: var(--font-sans);
   font-size: 0.78rem;
-  color: var(--text-dim);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.course-instructor {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.course-location {
+  color: var(--text-muted);
+  font-size: 0.74rem;
 }
 
 /* No courses */
@@ -271,31 +267,32 @@
   text-align: center;
   padding: 40px 20px;
   background: var(--bg-surface);
-  border: 1px solid var(--border);
+  border: 1px dashed var(--border-strong);
   border-radius: var(--radius);
 }
 
 .no-courses-message p {
-  color: var(--text-dim);
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
 }
 
-@media (max-width: 640px) {
-  .output-header {
-    padding: 16px;
-  }
-  .output-header .header-content {
+/* Responsive */
+@media (max-width: 720px) {
+  .schedule-title { font-size: 1.6rem; }
+  .schedule-header-top {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: stretch;
   }
-  .header-meta {
-    flex-wrap: wrap;
-  }
-  .course-details {
-    padding: 16px;
-  }
-  .courses-grid {
+  .course-row {
     grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 8px;
+  }
+  .course-row-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: left;
+    gap: 4px 12px;
   }
 }

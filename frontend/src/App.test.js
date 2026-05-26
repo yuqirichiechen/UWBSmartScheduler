@@ -54,15 +54,18 @@ afterEach(() => {
 
 test('renders header and connects to the API', async () => {
   render(<App />);
-  expect(screen.getByText(/Smart/i)).toBeInTheDocument();
+  // The brand mark in the header
+  expect(
+    screen.getByRole('heading', { level: 1, name: /Smart/i })
+  ).toBeInTheDocument();
   await waitFor(() => {
-    expect(screen.getByText(/Connected/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Connected$/)).toBeInTheDocument();
   });
 });
 
 test('submitting a query renders the resulting schedule', async () => {
   render(<App />);
-  await waitFor(() => expect(screen.getByText(/Connected/i)).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText(/^Connected$/)).toBeInTheDocument());
 
   const textarea = screen.getByPlaceholderText(/Tuesday and Thursday/i);
   fireEvent.change(textarea, { target: { value: 'CSS core, no Friday' } });
@@ -72,14 +75,14 @@ test('submitting a query renders the resulting schedule', async () => {
     expect(scheduleAPI.getSchedule).toHaveBeenCalledWith('CSS core, no Friday', [])
   );
 
-  // Both courses should land in the output
+  // Both courses land in the output (calendar + course rows)
   await waitFor(() => {
     expect(screen.getAllByText(/CSS 112/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/CSS 225/).length).toBeGreaterThan(0);
   });
 
-  // Total credits in the header badge
-  expect(screen.getByText(/9 credits/i)).toBeInTheDocument();
-  // No-conflicts state
+  // Total credit pill in the schedule header
+  expect(screen.getByText(/^9 credits$/)).toBeInTheDocument();
+  // No-conflicts badge
   expect(screen.getByText(/No Conflicts/i)).toBeInTheDocument();
 });

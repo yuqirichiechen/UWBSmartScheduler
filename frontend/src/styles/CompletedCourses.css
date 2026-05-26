@@ -1,128 +1,128 @@
 /* ============================================
-   Completed Courses — Compact Tag Input
+   Completed Courses — inline strip, no card
    ============================================ */
 
-.completed-courses-container {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
+.completed-courses {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px;
   animation: fadeInUp 0.5s ease-out 0.1s both;
 }
 
-.completed-courses-container h3 {
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 14px;
-}
-
-.course-input-group {
+.completed-label {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  align-items: baseline;
+  gap: 10px;
 }
 
-.course-input {
-  flex: 1;
-  padding: 9px 14px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.course-input::placeholder {
-  color: var(--text-dim);
-}
-
-.course-input:focus {
-  outline: none;
-  border-color: var(--indigo);
-  box-shadow: 0 0 0 3px var(--indigo-dim);
-}
-
-.add-course-btn {
-  padding: 9px 18px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-secondary);
-  font-family: var(--font-display);
-  font-size: 0.8rem;
+.completed-label-text {
+  font-size: 0.78rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
 }
 
-.add-course-btn:hover {
-  border-color: var(--indigo);
-  color: var(--indigo);
-  background: var(--indigo-dim);
+.completed-label-hint {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
-/* Course tags */
-.courses-list {
+.completed-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  align-items: center;
+  gap: 6px 8px;
 }
 
+/* Course tag — restrained, paper-colored */
 .course-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px 5px 12px;
-  background: var(--indigo-dim);
-  border: 1px solid rgba(129, 140, 248, 0.18);
-  border-radius: 100px;
-  font-family: var(--font-display);
+  gap: 4px;
+  padding: 3px 4px 3px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 500;
-  color: var(--indigo);
-  letter-spacing: 0.02em;
-  animation: fadeIn 0.2s ease-out;
+  color: var(--text);
+  animation: fadeIn 0.18s ease-out;
 }
 
 .remove-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  background: none;
+  width: 18px;
+  height: 18px;
+  background: transparent;
   border: none;
-  color: var(--indigo);
+  color: var(--text-muted);
   font-size: 14px;
+  line-height: 1;
   cursor: pointer;
   border-radius: 50%;
-  transition: all 0.15s;
-  opacity: 0.5;
-  line-height: 1;
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
 .remove-btn:hover {
-  opacity: 1;
-  background: rgba(129, 140, 248, 0.15);
+  background: var(--bg-sunken);
   color: var(--error);
 }
 
-.no-courses-text {
-  font-size: 0.8rem;
-  color: var(--text-dim);
+/* Inline input — looks like another chip until you type */
+.course-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  padding: 2px 4px 2px 10px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.course-input-wrap:focus-within {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.course-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--text);
+  width: 90px;
+  padding: 3px 0;
+}
+
+.course-input::placeholder {
+  color: var(--text-muted);
   font-style: italic;
 }
 
+.add-course-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.add-course-btn:hover { background: var(--accent-strong); }
+
 @media (max-width: 640px) {
-  .completed-courses-container {
-    padding: 16px;
-    border-radius: var(--radius);
-  }
+  .completed-row { gap: 6px; }
+  .course-input { width: 80px; }
 }

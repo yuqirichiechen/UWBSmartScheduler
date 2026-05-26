@@ -79,6 +79,20 @@ function App() {
 
           {apiStatus !== 'error' && (
             <>
+              {!schedule && !loading && (
+                <section className="hero">
+                  <div className="hero-eyebrow">UW Bothell · CSS</div>
+                  <h2>
+                    Plan your quarter in <em>plain English</em>.
+                  </h2>
+                  <p>
+                    Describe the schedule you want — days you can come to campus,
+                    credit limits, courses you need — and SmartScheduler picks
+                    the sections that actually fit.
+                  </p>
+                </section>
+              )}
+
               <QueryInput onSubmit={handleQuery} loading={loading} />
               <CompletedCourses onUpdate={handleCompletedCoursesUpdate} />
 
@@ -89,7 +103,7 @@ function App() {
               {loading && (
                 <div className="loading-spinner">
                   <div className="spinner"></div>
-                  <p>Building your schedule...</p>
+                  <p>Building your schedule…</p>
                 </div>
               )}
 

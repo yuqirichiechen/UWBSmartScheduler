@@ -27,57 +27,42 @@ function QueryInput({ onSubmit, loading }) {
 
   return (
     <div className="query-input-container">
-      <div className="input-section">
-        <h2>What does your ideal schedule look like?</h2>
-        <p className="subtitle">Describe your preferences in plain English</p>
+      <form onSubmit={handleSubmit} className="query-card">
+        <textarea
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="e.g. CSS core requirements, only Tuesday and Thursday, max 14 credits…"
+          className="query-textarea"
+          disabled={loading}
+          rows="3"
+        />
 
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <textarea
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="e.g., I want CSS core requirements, mostly Tuesday and Thursday, max 14 credits..."
-              className="query-textarea"
-              disabled={loading}
-              rows="3"
-            />
-          </div>
-
+        <div className="query-card-footer">
+          <span className="query-hint">Press <kbd>↵</kbd> to submit · <kbd>⇧↵</kbd> for newline</span>
           <button
             type="submit"
             className="submit-button"
             disabled={loading || !query.trim()}
           >
-            {loading ? 'Generating...' : 'Generate Schedule'}
+            {loading ? 'Generating…' : 'Generate Schedule'}
           </button>
-        </form>
-
-        <div className="examples">
-          <p className="examples-title">Try an example</p>
-          <div className="example-buttons">
-            {exampleQueries.map((example, idx) => (
-              <button
-                key={idx}
-                onClick={() => setQuery(example)}
-                className="example-button"
-                disabled={loading}
-              >
-                {example}
-              </button>
-            ))}
-          </div>
         </div>
-      </div>
+      </form>
 
-      <div className="tips-section">
-        <h3>Tips</h3>
-        <ul>
-          <li><strong>Be specific</strong> &mdash; name courses or departments</li>
-          <li><strong>Set constraints</strong> &mdash; days, times, credit limits</li>
-          <li><strong>Add completed courses</strong> &mdash; for prerequisite checks</li>
-          <li><strong>State preferences</strong> &mdash; morning, afternoon, in-person</li>
-        </ul>
+      <div className="examples">
+        <span className="examples-label">Try</span>
+        {exampleQueries.map((example, idx) => (
+          <button
+            key={idx}
+            onClick={() => setQuery(example)}
+            className="example-chip"
+            disabled={loading}
+            title={example}
+          >
+            {example}
+          </button>
+        ))}
       </div>
     </div>
   );
