@@ -87,9 +87,15 @@ class PrerequisiteGraph:
         """
         expanded = set(c.upper() for c in completed_courses)
         queue = list(expanded)
+        visited = set()  # Cycle detection
 
         while queue:
             course = queue.pop()
+            # Skip if already visited to prevent infinite loops
+            if course in visited:
+                continue
+            visited.add(course)
+            
             for prereq in self.graph.get(course, set()):
                 prereq_upper = prereq.upper()
                 if prereq_upper not in expanded:

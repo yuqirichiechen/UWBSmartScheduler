@@ -104,15 +104,23 @@ function ScheduleOutput({ schedule }) {
 }
 
 function CourseRow({ course }) {
-  const section = course.sections && course.sections[0];
-  const meeting = section && section.meeting_times && section.meeting_times[0];
+  // Defensive checks for missing data
+  if (!course) return null;
+  
+  const sections = course.sections && Array.isArray(course.sections) && course.sections.length > 0 
+    ? course.sections 
+    : null;
+  const section = sections ? sections[0] : null;
+  const meeting = section && section.meeting_times && Array.isArray(section.meeting_times) && section.meeting_times.length > 0
+    ? section.meeting_times[0]
+    : null;
 
   return (
     <li className="course-row">
       <div className="course-row-left">
         <div className="course-code">{course.code}</div>
         <div className="course-row-title">{course.title}</div>
-        {course.prerequisites && course.prerequisites.length > 0 && (
+        {course.prerequisites && Array.isArray(course.prerequisites) && course.prerequisites.length > 0 && (
           <div className="course-row-prereqs">
             requires {course.prerequisites.join(', ')}
           </div>
@@ -121,15 +129,15 @@ function CourseRow({ course }) {
 
       <div className="course-row-meeting">
         {section && (
-          <span className="section-pill">Sec {section.section_number}</span>
+          <span className="section-pill">Sec {section.section_number || 'TBA'}</span>
         )}
-        {meeting && meeting.days && (
+        {meeting && meeting.days && Array.isArray(meeting.days) && (
           <span className="meeting-days">
-            {(Array.isArray(meeting.days) ? meeting.days : [meeting.days])
+            {meeting.days
               .map(d => DAY_NAMES[d] || d).join(' · ')}
           </span>
         )}
-        {meeting && (
+        {meeting && meeting.start_time && meeting.end_time && (
           <span className="meeting-time">
             {formatTimeStr(meeting.start_time)} – {formatTimeStr(meeting.end_time)}
           </span>
@@ -137,7 +145,7 @@ function CourseRow({ course }) {
       </div>
 
       <div className="course-row-right">
-        <span className="course-credits">{course.credits} cr</span>
+        <span className="course-credits">{course.credits || 0} cr</span>
         <span className="course-instructor">
           {section ? (section.instructor || 'TBA') : 'TBA'}
         </span>

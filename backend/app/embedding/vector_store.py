@@ -55,14 +55,17 @@ class VectorStore:
                         ),
                     )
                 self.index = client.Index(self.index_name)
-                logger.info(f"Connected to Pinecone (v3) index: {self.index_name}")
+                logger.info(f"✓ Connected to Pinecone (v3 API) index: {self.index_name}")
                 return
             except ImportError:
+                logger.debug("Pinecone v3 not available, falling back to v2")
                 pass  # fall through to legacy
             except AttributeError:
+                logger.debug("Pinecone v3 attribute error, falling back to v2")
                 pass  # fall through to legacy
 
             # Legacy v2 API
+            logger.info("Using Pinecone v2 (legacy) API")
             import pinecone  # type: ignore
             pinecone.init(api_key=self.api_key, environment=self.environment)
             if self.index_name not in pinecone.list_indexes():
@@ -73,6 +76,7 @@ class VectorStore:
                     metric="cosine",
                 )
             self.index = pinecone.Index(self.index_name)
+            logger.info(f"✓ Connected to Pinecone (v2 API) index: {self.index_name}")
             logger.info(f"Connected to Pinecone (legacy) index: {self.index_name}")
         except ImportError:
             logger.warning("Pinecone not installed, using in-memory storage")

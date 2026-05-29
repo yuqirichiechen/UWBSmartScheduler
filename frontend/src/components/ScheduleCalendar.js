@@ -39,11 +39,22 @@ function ScheduleCalendar({ recommendedCourses }) {
       course.sections.forEach((section) => {
         if (!section.meeting_times || !Array.isArray(section.meeting_times)) return;
         section.meeting_times.forEach((meeting) => {
+          // Validate required meeting fields
+          if (!meeting || !meeting.start_time || !meeting.end_time || !meeting.days) {
+            return; // Skip invalid meetings
+          }
+          
           const days = Array.isArray(meeting.days) ? meeting.days : [meeting.days];
           const startTime = parseTime(meeting.start_time);
           const endTime = parseTime(meeting.end_time);
+          
+          // Skip if time parsing failed
+          if (!startTime || !endTime) {
+            return;
+          }
 
           days.forEach((day) => {
+            if (!day) return; // Skip invalid day
             const dayName = DAY_ABBREVIATIONS[day] || day;
             events.push({
               day: dayName,

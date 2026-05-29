@@ -20,13 +20,18 @@ function loadPlan() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return {};
     return JSON.parse(raw);
-  } catch {
+  } catch (err) {
+    console.error('Failed to load year plan from localStorage:', err);
+    localStorage.removeItem(STORAGE_KEY);
     return {};
   }
 }
 
 function savePlan(plan) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(plan)); } catch {}
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
+  } catch (err) {
+    console.warn('Failed to save year plan to localStorage:', err);
 }
 
 function YearPlanner() {

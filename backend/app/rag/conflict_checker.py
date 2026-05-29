@@ -95,22 +95,40 @@ class ConflictChecker:
         """Convert time string to minutes since midnight.
         
         Args:
-            time_str: Time string in format "HH:MM" or time object
+            time_str: Time string in format "HH:MM", "HHMM", or time object
             
         Returns:
-            Minutes since midnight
+            Minutes since midnight. Returns 0 for invalid input (logs warning).
         """
         if isinstance(time_str, time):
             return time_str.hour * 60 + time_str.minute
         
         try:
             if isinstance(time_str, str):
-                parts = time_str.split(':')
+                time_str = time_str.strip()
+                # Handle both "HH:MM" and "HHMM" formats
+                if ':' in time_str:
+                    parts = time_str.split(':')
+                else:
+                    # Assume format like "1100" for 11:00
+                    if len(time_str) == 4:
+                        parts = [time_str[:2], time_str[2:]]
+                    elif len(time_str) == 3:
+                        parts = [time_str[:1], time_str[1:]]
+                    else:
+                        parts = [time_str]
+                
                 hours = int(parts[0])
                 minutes = int(parts[1]) if len(parts) > 1 else 0
+                
+                # Validate ranges
+                if not (0 <= hours < 24 and 0 <= minutes < 60):
+                    logger.warning(f"Invalid time values - hours: {hours}, minutes: {minutes}")
+                    return 0
+                    
                 return hours * 60 + minutes
-        except (ValueError, IndexError, AttributeError):
-            logger.warning(f"Could not parse time: {time_str}")
+        except (ValueError, IndexError, AttributeError) as e:
+            logger.warning(f"Could not parse time: {time_str} - {e}")
             return 0
         
         return 0

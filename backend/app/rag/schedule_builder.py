@@ -79,7 +79,7 @@ class ScheduleBuilder:
                 continue
 
             # credit cap (admit only if it would not exceed)
-            current_credits = sum(c.get("credit_hours", c.get("credits", 0)) for c in picked_courses)
+            current_credits = sum(c.get("credits", 0) for c in picked_courses)
             course_credits = course.get("credit_hours", course.get("credits", 0))
             if current_credits + course_credits > max_credits:
                 continue
@@ -96,12 +96,12 @@ class ScheduleBuilder:
 
             chosen = dict(course)
             chosen["sections"] = [section]
-            chosen["credits"] = course_credits
+            chosen["credits"] = course_credits  # Normalized field for client
             picked_courses.append(chosen)
 
             sec_for_conflict = dict(section)
             sec_for_conflict["course_code"] = course["code"]
-            sec_for_conflict["credits"] = course_credits
+            sec_for_conflict["credits"] = course_credits  # Use credits for consistency
             sec_for_conflict["prerequisites"] = course.get("prerequisites", [])
             picked_sections.append(sec_for_conflict)
 

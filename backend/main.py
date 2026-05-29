@@ -1,10 +1,13 @@
 """Main FastAPI application."""
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional, List
 import logging
 import json
+import os
+import re
 
 from app.config import settings
 from app.utils import setup_logging, PrerequisiteGraph
@@ -23,13 +26,14 @@ app = FastAPI(
     description="AI-powered course scheduling assistant for UW Bothell students"
 )
 
-# Add CORS middleware
+# Add CORS middleware - restrict to configured origins
+allowed_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 # Initialize services
@@ -69,18 +73,10 @@ async def startup_event():
         preprocessed_courses = scraper.scrape_courses()
         logger.info(f"✓ Loaded {len(preprocessed_courses)} courses")
 
-        # Build prerequisite graph from the scraper's full prerequisite database
+        # Build prerequisite graph from loaded courses (not from hardcoded range)
         prereq_graph = PrerequisiteGraph()
-        for num in range(100, 500):
-            for prefix in ("CSS", "CSE"):
-                code = f"{prefix} {num}"
-                prereqs = scraper._get_prerequisites(code)
-                if prereqs:
-                    prereq_graph.add_course(code, prereqs)
-        # Also add any loaded courses not yet in the graph
         for course in preprocessed_courses:
-            if course['code'] not in prereq_graph.graph:
-                prereq_graph.add_course(course['code'], course.get('prerequisites', []))
+            prereq_graph.add_course(course['code'], course.get('prerequisites', []))
         logger.info(f"✓ Prerequisite graph built ({len(prereq_graph.graph)} courses)")
 
         # Vector store is always created — it falls back to an in-memory mock
@@ -216,11 +212,15 @@ async def get_schedule(request: ScheduleRequest):
         logger.info(f"{len(eligible_courses)} courses eligible after completion filter")
 
         # 5. Build schedule — deterministic builder is primary, RAG is optional.
-        hydrated_courses, message = ScheduleBuilder.build(
-            constraints=constraints,
-            courses=eligible_courses,
-            completed_courses=completed,
-        )
+        try:
+            hydrated_courses, message = ScheduleBuilder.build(
+                constraints=constraints,
+                courses=eligible_courses,
+                completed_courses=completed,
+            )
+        except (HTTPException, ValueError, KeyError, TypeError) as e:
+            logger.error(f"Schedule building failed: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to build schedule: {str(e)}")
 
         # Optional RAG pass: only runs if an OpenAI key was configured at
         # startup. It currently overrides the deterministic recommendation
@@ -239,6 +239,7 @@ async def get_schedule(request: ScheduleRequest):
 
         # Validate schedule constraints (informational — builder already
         # enforces them, but we surface any residual issues to the UI).
+        # Validate: return full course objects with selected sections, not just sections
         recommended_sections = _parse_sections_from_hydrated(hydrated_courses)
         is_valid, issues = ConflictChecker.validate_schedule_constraints(
             recommended_sections,
@@ -275,13 +276,18 @@ async def get_courses():
     """
     try:
         if not preprocessed_courses:
-            return {"courses": [], "count": 0, "status": "loading"}
+            response_data = {"courses": [], "count": 0, "status": "loading"}
+        else:
+            response_data = {
+                "courses": preprocessed_courses,
+                "count": len(preprocessed_courses),
+                "status": "ready"
+            }
         
-        return {
-            "courses": preprocessed_courses,
-            "count": len(preprocessed_courses),
-            "status": "ready"
-        }
+        # Create response with cache headers for static course data
+        response = JSONResponse(content=response_data)
+        response.headers["Cache-Control"] = "public, max-age=3600"  # Cache for 1 hour
+        return response
     
     except Exception as e:
         logger.error(f"Error retrieving courses: {e}")
@@ -301,16 +307,19 @@ async def get_course(course_code: str):
     Returns:
         Course details with sections
     """
+    # Validate course code format to prevent injection
+    if not re.match(r'^[A-Z]{2,3}\s?\d{1,4}$', course_code):
+        raise HTTPException(status_code=400, detail="Invalid course code format")
     try:
         if not preprocessed_courses:
             raise HTTPException(status_code=404, detail="No courses available")
-        
+
         for course in preprocessed_courses:
             if course['code'].upper() == course_code.upper():
                 return course
-        
+
         raise HTTPException(status_code=404, detail=f"Course {course_code} not found")
-    
+
     except HTTPException:
         raise
     except Exception as e:
