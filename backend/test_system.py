@@ -48,8 +48,8 @@ def test_scraper():
     return courses
 
 
-def test_constraint_parser(test_queries):
-    """Test the natural language constraint parser."""
+def verify_constraint_parser(test_queries):
+    """Verify the natural language constraint parser."""
     print("\n" + "="*60)
     print("TEST 2: Constraint Parser")
     print("="*60)
@@ -62,8 +62,8 @@ def test_constraint_parser(test_queries):
         print(json.dumps(constraints, indent=2, default=str))
 
 
-def test_conflict_checker(courses):
-    """Test the conflict detection system."""
+def verify_conflict_checker(courses):
+    """Verify the conflict detection system."""
     print("\n" + "="*60)
     print("TEST 3: Conflict Checker")
     print("="*60)
@@ -499,10 +499,10 @@ def run_all_tests():
             "I'm working 30 hours a week. What courses can fit around my schedule?",
             "I need CSS 342 and CSS 385 this quarter.",
         ]
-        test_constraint_parser(test_queries)
+        verify_constraint_parser(test_queries)
 
         # Test 3: Conflict Checker
-        test_conflict_checker(courses)
+        verify_conflict_checker(courses)
 
         # Test 4: Embedding Service
         test_embedding_service()

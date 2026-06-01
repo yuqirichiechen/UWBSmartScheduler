@@ -1,0 +1,303 @@
+[
+  {
+    "code": "CSS 142",
+    "title": "Computer Programming I",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "12888",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      },
+      {
+        "section_number": "B",
+        "section_id": "12889",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "15:30",
+            "end_time": "17:30",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 143",
+    "title": "Computer Programming II",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 142"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "12891",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "15:30",
+            "end_time": "17:30",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 342",
+    "title": "Data Structures, Algorithms, and Discrete Math I",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 211",
+      "CSS 201"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "13411",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "13:15",
+            "end_time": "15:15",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      },
+      {
+        "section_number": "B",
+        "section_id": "13412",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 343",
+    "title": "Data Structures, Algorithms, and Discrete Math II",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "B",
+        "section_id": "13431",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 360",
+    "title": "Software Engineering",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "B",
+        "section_id": "13601",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 370",
+    "title": "Analysis and Design",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "C",
+        "section_id": "13701",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "13:15",
+            "end_time": "15:15",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 382",
+    "title": "Introduction to Artificial Intelligence",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "13821",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 385",
+    "title": "Intro to Game Development",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 342"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "13851",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M",
+              "W"
+            ],
+            "start_time": "15:30",
+            "end_time": "17:30",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  },
+  {
+    "code": "CSS 475",
+    "title": "Database Systems",
+    "credit_hours": 5,
+    "department": "CSS",
+    "prerequisites": [
+      "CSS 343"
+    ],
+    "sections": [
+      {
+        "section_number": "A",
+        "section_id": "14751",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "M"
+            ],
+            "start_time": "15:30",
+            "end_time": "17:30",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      },
+      {
+        "section_number": "B",
+        "section_id": "14752",
+        "instructor": "TBA",
+        "meeting_times": [
+          {
+            "days": [
+              "T",
+              "Th"
+            ],
+            "start_time": "11:00",
+            "end_time": "13:00",
+            "location": "UW Bothell"
+          }
+        ],
+        "credits": 5
+      }
+    ]
+  }
+]
