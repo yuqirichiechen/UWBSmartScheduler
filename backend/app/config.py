@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     # without it, the RAG runs in "inline context" mode (catalog stuffed into
     # the prompt) instead of using a hosted File Search store.
     gemini_api_key: Optional[str] = None
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-2.5-flash"
     gemini_embedding_model: str = "gemini-embedding-001"
     gemini_file_search_store: Optional[str] = None
 

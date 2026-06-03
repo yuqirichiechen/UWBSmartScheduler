@@ -151,7 +151,7 @@ async def startup_event():
                     api_key=settings.gemini_api_key,
                     model=settings.gemini_model,
                     file_search_store=settings.gemini_file_search_store,
-                    catalog_corpus=catalog_store.to_corpus(),
+                    catalog_store=catalog_store,
                 )
                 mode = "File Search" if settings.gemini_file_search_store else "inline catalog"
                 logger.info(f"✓ Gemini RAG initialized ({mode})")

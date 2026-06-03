@@ -30,6 +30,7 @@ class GeminiRAG:
         model: str = "gemini-2.0-flash",
         file_search_store: Optional[str] = None,
         catalog_corpus: Optional[str] = None,
+        catalog_store=None,
     ):
         from google import genai  # imported lazily so the dep is optional
 
@@ -37,10 +38,34 @@ class GeminiRAG:
         self.client = genai.Client(api_key=api_key)
         self.model = model
         self.file_search_store = file_search_store
-        # Inline corpus is only used when no hosted store is configured.
-        self.catalog_corpus = catalog_corpus or ""
+        # `catalog_store` (a CatalogStore) lets us ground on only the *relevant*
+        # courses per request instead of inlining the whole catalog — this keeps
+        # input-token usage tiny, which matters a lot on the Gemini free tier.
+        self.catalog_store = catalog_store
+        # Full-corpus string is the last-resort grounding for free-form Q&A.
+        self.catalog_corpus = catalog_corpus or (
+            catalog_store.to_corpus() if catalog_store else ""
+        )
         mode = "file_search" if file_search_store else "inline"
         logger.info("GeminiRAG initialized (model=%s, mode=%s)", model, mode)
+
+    # ------------------------------------------------------------------
+    def _ground_courses(self, codes: List[str]) -> str:
+        """Catalog text for just the given course codes (small, targeted)."""
+        if self.file_search_store or not self.catalog_store:
+            return ""
+        seen, docs = set(), []
+        for code in codes:
+            norm = code.upper().replace(" ", "")
+            if norm in seen:
+                continue
+            seen.add(norm)
+            course = self.catalog_store.get(code)
+            if course:
+                docs.append(self.catalog_store.to_document(course))
+        if not docs:
+            return ""
+        return "\n\nRELEVANT CATALOG ENTRIES:\n" + "\n\n".join(docs)
 
     # ------------------------------------------------------------------
     def _generate(self, prompt: str, use_tools: bool = True) -> str:
@@ -60,7 +85,7 @@ class GeminiRAG:
             )
             return (getattr(resp, "text", None) or "").strip()
         except Exception as e:  # pragma: no cover — network/SDK errors
-            logger.error("Gemini generate_content failed: %s", e)
+            logger.warning("Gemini generate_content failed: %s", _short_err(e))
             raise
 
     # ------------------------------------------------------------------
@@ -94,12 +119,9 @@ class GeminiRAG:
             default=str,
         )
 
-        grounding = ""
-        if not self.file_search_store and self.catalog_corpus:
-            grounding = (
-                "\n\nCOURSE CATALOG (authoritative reference):\n"
-                + self.catalog_corpus[:120000]  # keep prompt within limits
-            )
+        # Ground on ONLY the picked + completed courses (a handful), not the
+        # whole catalog — keeps the request well under free-tier token limits.
+        grounding = self._ground_courses(picked + completed)
 
         prompt = f"""You are a UW Bothell CSS academic advisor. A deterministic
 scheduler already produced the conflict-free schedule below. Using the course
@@ -125,15 +147,11 @@ Respond with plain text only."""
                 raise ValueError("empty response")
             return {"recommendation": text, "recommended_courses": picked}
         except Exception as e:
-            logger.warning("Gemini recommendation failed, using fallback: %s", e)
-            total = sum(c.get("credits", 0) for c in retrieved_courses)
-            return {
-                "recommendation": (
-                    f"Selected {len(retrieved_courses)} courses ({total} credits)."
-                    " (LLM explanation unavailable.)"
-                ),
-                "recommended_courses": picked,
-            }
+            # Return an EMPTY recommendation so the caller keeps the
+            # deterministic builder's summary instead of a worse placeholder.
+            logger.warning("Gemini recommendation unavailable (%s) — using deterministic summary",
+                           _short_err(e))
+            return {"recommendation": "", "recommended_courses": picked}
 
     # ------------------------------------------------------------------
     def ask(self, question: str) -> str:
@@ -151,5 +169,23 @@ Respond with plain text only."""
         )
         try:
             return self._generate(prompt)
-        except Exception:
+        except Exception as e:
+            if _is_quota_error(e):
+                return ("The catalog assistant hit its Gemini quota. Check the "
+                        "model/billing for your API key and try again shortly.")
             return "Sorry — the catalog assistant is unavailable right now."
+
+
+def _short_err(e: Exception) -> str:
+    """Condense a noisy SDK exception (e.g. a full 429 JSON blob) to one line."""
+    msg = str(e)
+    if "RESOURCE_EXHAUSTED" in msg or "429" in msg:
+        return "429 quota exceeded (check GEMINI_MODEL / billing for your key)"
+    if len(msg) > 200:
+        return msg[:200] + "…"
+    return msg
+
+
+def _is_quota_error(e: Exception) -> bool:
+    msg = str(e)
+    return "RESOURCE_EXHAUSTED" in msg or "429" in msg
