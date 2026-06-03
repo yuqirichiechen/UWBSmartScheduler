@@ -26,11 +26,19 @@ app = FastAPI(
     description="AI-powered course scheduling assistant for UW Bothell students"
 )
 
-# Add CORS middleware - restrict to configured origins
-allowed_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+# Add CORS middleware with environment-aware configuration
+if settings.serverless:
+    # On Vercel, frontend and backend are same origin via rewrite, so allow all
+    cors_origins = ["*"]
+    logger.info("CORS: Serverless mode - allowing all origins (same domain via rewrite)")
+else:
+    # Local dev: allow localhost:3000 (React dev server) or override via env var
+    cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    logger.info(f"CORS: Local mode - allowing origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
