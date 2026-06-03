@@ -11,9 +11,10 @@ import re
 
 from app.config import settings
 from app.utils import setup_logging, PrerequisiteGraph
-from app.rag import ConstraintParser, RAGPipeline, ConflictChecker, ScheduleBuilder
+from app.rag import ConstraintParser, RAGPipeline, ConflictChecker, ScheduleBuilder, GeminiRAG
 from app.embedding import EmbeddingService, VectorStore
 from app.scraper import UWScheduleScraper
+from app.catalog import CatalogStore
 
 # Setup logging
 setup_logging(debug=settings.debug)
@@ -48,6 +49,8 @@ app.add_middleware(
 embedding_service = None
 vector_store = None
 rag_pipeline = None
+gemini_rag = None  # Gemini File Search RAG over the course catalog
+catalog_store = None  # Parsed CSS course-descriptions catalog
 scraper = None
 preprocessed_courses = None  # Cache for courses
 prereq_graph = None  # Prerequisite graph for inference
@@ -63,7 +66,8 @@ async def startup_event():
     `settings.serverless` is true — the cached course file is the source of
     truth for the deployed instance.
     """
-    global embedding_service, vector_store, rag_pipeline, scraper, preprocessed_courses, prereq_graph
+    global embedding_service, vector_store, rag_pipeline, gemini_rag, catalog_store
+    global scraper, preprocessed_courses, prereq_graph
 
     try:
         logger.info("=" * 60)
@@ -132,9 +136,30 @@ async def startup_event():
                 openai_api_key=settings.openai_api_key,
                 openai_model=settings.openai_model
             )
-            logger.info("✓ RAG pipeline initialized")
+            logger.info("✓ OpenAI RAG pipeline initialized")
         else:
-            logger.info("ℹ OpenAI key absent — deterministic ScheduleBuilder is the only path")
+            logger.info("ℹ OpenAI key absent — skipping legacy GPT pipeline")
+
+        # Load the CSS course-descriptions catalog (RAG knowledge base)
+        catalog_store = CatalogStore()
+        logger.info(f"✓ Catalog loaded ({len(catalog_store)} courses)")
+
+        # Gemini File Search RAG (preferred LLM path)
+        if settings.gemini_api_key:
+            try:
+                gemini_rag = GeminiRAG(
+                    api_key=settings.gemini_api_key,
+                    model=settings.gemini_model,
+                    file_search_store=settings.gemini_file_search_store,
+                    catalog_corpus=catalog_store.to_corpus(),
+                )
+                mode = "File Search" if settings.gemini_file_search_store else "inline catalog"
+                logger.info(f"✓ Gemini RAG initialized ({mode})")
+            except Exception as e:
+                logger.warning(f"Gemini RAG unavailable: {e}")
+                gemini_rag = None
+        else:
+            logger.info("ℹ Gemini key absent — deterministic ScheduleBuilder produces the summary")
 
         logger.info("=" * 60)
         logger.info("Backend initialization complete!")
@@ -169,7 +194,9 @@ async def health_check():
     return {
         "status": "healthy",
         "courses_loaded": len(preprocessed_courses) if preprocessed_courses else 0,
+        "catalog_loaded": len(catalog_store) if catalog_store else 0,
         "rag_ready": rag_pipeline is not None,
+        "gemini_ready": gemini_rag is not None,
         "embeddings_ready": embedding_service is not None,
         "serverless": settings.serverless,
     }
@@ -230,10 +257,24 @@ async def get_schedule(request: ScheduleRequest):
             logger.error(f"Schedule building failed: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to build schedule: {str(e)}")
 
-        # Optional RAG pass: only runs if an OpenAI key was configured at
-        # startup. It currently overrides the deterministic recommendation
-        # message only — the builder remains the source of truth for sections.
-        if rag_pipeline:
+        # Optional LLM pass: grounds the recommendation message in the course
+        # catalog. Gemini File Search is preferred; the legacy OpenAI pipeline
+        # is a fallback. Either way, the deterministic builder remains the
+        # source of truth for which sections are picked — the LLM only rewrites
+        # the human-readable summary using `hydrated_courses` (what the student
+        # actually sees).
+        if gemini_rag:
+            try:
+                rec = gemini_rag.recommend_schedule(
+                    constraints=constraints,
+                    retrieved_courses=hydrated_courses,
+                    completed_courses=completed,
+                )
+                if rec.get("recommendation"):
+                    message = rec["recommendation"]
+            except Exception as e:  # pragma: no cover — best-effort augmentation
+                logger.warning(f"Gemini augmentation failed, keeping deterministic summary: {e}")
+        elif rag_pipeline:
             try:
                 rec = rag_pipeline.recommend_schedule(
                     constraints=constraints,
@@ -273,6 +314,39 @@ async def get_schedule(request: ScheduleRequest):
             status_code=500,
             detail=f"Failed to generate schedule: {str(e)}"
         )
+
+
+class AskRequest(BaseModel):
+    """Free-form catalog question."""
+    question: str
+
+
+@app.post("/api/ask")
+async def ask_catalog(request: AskRequest):
+    """Answer a free-form question about CSS courses using the catalog RAG.
+
+    Uses Gemini File Search when configured; otherwise returns a helpful
+    message so the UI can degrade gracefully.
+    """
+    if not gemini_rag:
+        return {
+            "answer": "The catalog assistant isn't configured. Set GEMINI_API_KEY to enable it.",
+            "available": False,
+        }
+    try:
+        answer = gemini_rag.ask(request.question)
+        return {"answer": answer, "available": True}
+    except Exception as e:
+        logger.error(f"Catalog ask failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/catalog")
+async def get_catalog():
+    """Return the full parsed CSS course-descriptions catalog (knowledge base)."""
+    if not catalog_store:
+        return {"courses": [], "count": 0}
+    return {"courses": catalog_store.courses, "count": len(catalog_store)}
 
 
 @app.get("/api/courses")

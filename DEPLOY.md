@@ -41,18 +41,58 @@ smartscheduler/
 ## Environment variables (all optional)
 
 Add these under **Project → Settings → Environment Variables** if you want to
-turn on the LLM augmentation path:
+turn on the LLM / RAG layer:
 
-| Name                     | Purpose                                                |
-|--------------------------|--------------------------------------------------------|
-| `OPENAI_API_KEY`         | Enables the RAG pipeline summary on top of the builder |
-| `OPENAI_MODEL`           | Optional override, defaults to `gpt-4`                 |
-| `PINECONE_API_KEY`       | Use Pinecone instead of the in-memory vector store     |
-| `PINECONE_ENVIRONMENT`   | Pinecone region (only with Pinecone)                   |
-| `PINECONE_INDEX_NAME`    | Index name; defaults to `uwbothell-courses`            |
+| Name                       | Purpose                                                            |
+|----------------------------|-------------------------------------------------------------------|
+| `GEMINI_API_KEY`           | Enables the Gemini RAG that grounds answers in the course catalog  |
+| `GEMINI_MODEL`             | Defaults to `gemini-2.0-flash` (adjust to a model you have access to) |
+| `GEMINI_EMBEDDING_MODEL`   | Defaults to `gemini-embedding-001` (only used by the store builder) |
+| `GEMINI_FILE_SEARCH_STORE` | Hosted File Search store name from the build script (see below)    |
+| `OPENAI_API_KEY`           | Legacy GPT path; only used if `GEMINI_API_KEY` is unset            |
+| `PINECONE_API_KEY`         | Use Pinecone instead of the in-memory vector store                 |
 
 Without any of the above, the deployment still works end-to-end: the
-deterministic `ScheduleBuilder` is the sole recommendation engine.
+deterministic `ScheduleBuilder` is the sole recommendation engine and the
+`/api/ask` catalog assistant returns a "not configured" message.
+
+### Gemini RAG: two modes
+
+The RAG knowledge base is the bundled CSS course catalog
+(`backend/data/catalog/css_catalog.json`, parsed from the official
+descriptions page).
+
+1. **Inline mode (zero setup).** Set only `GEMINI_API_KEY`. The catalog (~58 KB)
+   is stuffed into the prompt on each call. Good enough for a class demo.
+
+2. **File Search mode (hosted store).** Build a Gemini File Search store once,
+   then point the app at it:
+
+   ```bash
+   cd backend && source venv/bin/activate
+   export GEMINI_API_KEY=...
+   python -m scripts.build_file_search_store
+   # prints: GEMINI_FILE_SEARCH_STORE=fileSearchStores/xxxxxxxx
+   ```
+
+   Put that `GEMINI_FILE_SEARCH_STORE` value into Vercel's env vars. The store
+   lives on Google's side, so cold starts stay fast and prompts stay small.
+
+> The model IDs in `config.py` (`gemini-2.0-flash`, `gemini-embedding-001`) are
+> defaults — change them to whatever your Gemini key actually has access to
+> (e.g. a newer flash/preview model) via the env vars above.
+
+### Refreshing the catalog
+
+The catalog snapshot is generated from a text file, so it's reproducible:
+
+```bash
+cd backend && source venv/bin/activate
+# edit data/catalog/css_descriptions.txt if the catalog changes, then:
+python -m app.catalog.parse_catalog        # regenerates css_catalog.json
+python -m scripts.build_file_search_store   # (only if using File Search mode)
+git add backend/data/catalog/ && git commit -m "refresh course catalog"
+```
 
 `SMARTSCHED_SERVERLESS=1` is set automatically by `api/index.py` so the
 backend skips work that's slow on cold starts (live scraping, embedding

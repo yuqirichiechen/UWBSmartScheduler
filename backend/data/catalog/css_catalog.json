@@ -1,0 +1,2456 @@
+[
+  {
+    "code": "CSS 101",
+    "title": "Digital Thinking",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Introduces the fundamental concepts behind computing and computational thinking including logical reasoning; problem solving, data representation; abstraction; complexity management; computers and network operations; effective web searches; ethics; and legal and social aspects of information technology through the creation of popular digital artifacts such as web pages, animations, and video games. Course overlaps with: CSE 110. Offered: jointly with BIS 111; AWSp.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "jointly with BIS 111; AWSp",
+    "overlaps_with": "CSE 110",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 107",
+    "title": "Introduction to Programming through Animated Storytelling",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "A&H",
+      "RSN"
+    ],
+    "description": "Introduces the fundamentals of programming using storytelling in virtual worlds; includes creation of characters, games, short stories, storyboards, 3-D motion, classes, methods, and functions. Contemporary topics vary addressing social, scientific, and ethical issues of information technology.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 110",
+    "title": "Introduction to Cybersecurity",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "SSc"
+    ],
+    "description": "Introduces cybersecurity topics including hacking, social networking, privacy, cryptography, legal aspects, social implications, password management, digital forensics, computer networking, wireless security, and ethical issues. Focuses on various methods and techniques to address cybersecurity threats. No technical experience needed. Course overlaps with: T INFO 110.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "T INFO 110",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 112",
+    "title": "Introduction to Programming for Scientific Applications",
+    "credits": 4,
+    "credits_detail": {
+      "raw": "4",
+      "min": 4,
+      "max": 4
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Introduces programming concepts using a discipline-specific computer language with an emphasis on scientific applications. Includes topics such as programming fundamentals (control structures, data types and representation, operations, functions and parameters) and introductory software engineering concepts (specifications, design, testing). Course overlaps with: CSS 132; CSS 142; CSE 142; CSE 160; and TCSS 142. Recommended: STMATH 124 or B MATH 144; and B PHYS 115 or B PHYS 122. Offered: WSp.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "WSp",
+    "overlaps_with": "CSS 132; CSS 142; CSE 142; CSE 160; and TCSS 142",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 123",
+    "title": "Programming for Data Science",
+    "credits": 3,
+    "credits_detail": {
+      "raw": "3",
+      "min": 3,
+      "max": 3
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Transition from basic to more advanced programming skills, focusing on using computational tools to solve data science problems. Gain familiarity with higher-level programming techniques (recursion, abstract data types, algorithm analysis), methods for exploring parameter space, and the automation of workflows. A discipline-specific computer language is used for instruction. Course overlaps with: CSS 133; CSS 143; CSE 143; T INFO 473; and TCSS 143. Prerequisite: a minimum grade of 2.0 in either CSS 112, CSS 132, CSS 142, CSE 122, or CSE 142.",
+    "prerequisite_text": "a minimum grade of 2.0 in either CSS 112, CSS 132, CSS 142, CSE 122, or CSE 142",
+    "prerequisite_codes": [
+      "CSS 112",
+      "CSS 132",
+      "CSS 142",
+      "CSE 122",
+      "CSE 142"
+    ],
+    "offered": null,
+    "overlaps_with": "CSS 133; CSS 143; CSE 143; T INFO 473; and TCSS 143",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 130",
+    "title": "Fundamentals of Web Media Technology",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Examines core concepts and technologies used to design, build, and support interactive media applications. Focuses on creating projects using media production processes and tools and applying programming constructs, incorporating text and multimedia content, and using standard formats and languages.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 132",
+    "title": "Computer Programming for Engineers I",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Introduces programming concepts within social, mathematical, and technological context. Topics include programming fundamentals (control structures, data types, functions, etc.), computer organization, algorithmic thinking, introductory software engineering concepts, and social and professional issues. Engineering applications are emphasized. A computer language used in engineering practice is used for instruction. Co-requisite: CSSSKL 132. Course overlaps with: CSS 112; CSS 142; CSE 142; and TCSS 142.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "CSS 112; CSS 142; CSE 142; and TCSS 142",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 133",
+    "title": "Computer Programming for Engineers II",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Transition from basic programming skills to a rigorous process of software development. Familiarization wit higher level programming techniques (recursion, generic programming, stacks, queues, trees, searching, and sorting). Emphasizes connection between algorithmic thought and implementation. Engineering applications are emphasized. Co-requisite: CSSSKL 133. Course overlaps with: CSS 123; CSS 143; CSE 143; T INFO 473; and TCSS 143. Prerequisite: a minimum grade of 2.0 in CSS 132.",
+    "prerequisite_text": "a minimum grade of 2.0 in CSS 132",
+    "prerequisite_codes": [
+      "CSS 132"
+    ],
+    "offered": null,
+    "overlaps_with": "CSS 123; CSS 143; CSE 143; T INFO 473; and TCSS 143",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 142",
+    "title": "Computer Programming I",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Introduces programming concepts within social, cultural, scientific, mathematical, and technological context. Topics include programming fundamentals (control structures, data types and representation, operations, functions and parameters), computer organization, algorithmic thinking, introductory software engineering concepts (specifications, design, testing), and social and professional issues. Co-requisite: CSSSKL 142. Course equivalent to: TCSS 142. Course overlaps with: CSS 112; CSS 132; CSE 121; and CSE 142.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "CSS 112; CSS 132; CSE 121; and CSE 142",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 143",
+    "title": "Computer Programming II",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Transition from basic programming skills to a rigorous process of software development. Familiarization with higher level programming techniques (recursion, generic programming, stacks, queues, trees, searching, and sorting). Emphasizes connection between algorithmic thought and implementation. Co-requisite: CSSSKL 143. Course equivalent to: CSE 143 and TCSS 143. Course overlaps with: CSS 123; CSS 133; CSE 122; CSE 123; and T INFO 473. Prerequisite: a minimum grade of 2.7 in either CSS 142 or CSE 142, or a minimum score of 4 on the AP Computer Science A exam.",
+    "prerequisite_text": "a minimum grade of 2.7 in either CSS 142 or CSE 142, or a minimum score of 4 on the AP Computer Science A exam",
+    "prerequisite_codes": [
+      "CSS 142",
+      "CSE 142"
+    ],
+    "offered": null,
+    "overlaps_with": "CSS 123; CSS 133; CSE 122; CSE 123; and T INFO 473",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 173",
+    "title": "Fundamentals of Programming Theory and Applications",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Fundamental concepts and techniques for analysis, design and implementation of computer programming. May not be repeated. Prerequisite: either CSS 142, CSE 122, or CSE 142.",
+    "prerequisite_text": "either CSS 142, CSE 122, or CSE 142",
+    "prerequisite_codes": [
+      "CSS 142",
+      "CSE 122",
+      "CSE 142"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 198",
+    "title": "Supervised Study",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 6",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Supervised exploration of computing-related topic or concept.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 199",
+    "title": "Computing Research",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 6",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Exploration of computing research activities and processes as specified in a contract with a faculty member.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 205",
+    "title": "Women in STEM Seminar: College Life",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1, max. 6",
+      "min": 1,
+      "max": 1
+    },
+    "attributes": [
+      "SSc",
+      "DIV"
+    ],
+    "description": "Develop effective academic strategies for women in science, technology, engineering and mathematics. Explores the representation of women in STEM as they are portrayed in literature and film. Discusses issues if STEM and gender including: mentors and support groups, social issues, role models and stereotyping, and earning respect. Credit/no-credit only.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 211",
+    "title": "Computers and Society",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "SSc"
+    ],
+    "description": "Exploration and discussion of issues related to the development, support, and usage of computing technology in today's society. Topics vary each quarter but may include coverage of areas such as intellectual property rights, cybersecurity, privacy, freedom of speech, liability, ethics, social justice, diversity, and labor. Course overlaps with: JSIS B 356. Prerequisite: a minimum grade of 2.0 in either B WRIT 135, ENGL 141, ENGL 182, ENGL 197, ENGL 198, or ENGL 199.",
+    "prerequisite_text": "a minimum grade of 2.0 in either B WRIT 135, ENGL 141, ENGL 182, ENGL 197, ENGL 198, or ENGL 199",
+    "prerequisite_codes": [
+      "B WRIT 135",
+      "ENGL 141",
+      "ENGL 182",
+      "ENGL 197",
+      "ENGL 198",
+      "ENGL 199"
+    ],
+    "offered": null,
+    "overlaps_with": "JSIS B 356",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 225",
+    "title": "Physics and Chemistry of Computer Components and Their Manufacture",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Examination of the basic physics and chemistry underlying the design and manufacture of computer components. Introduction to the electronic structure of the solid state, the nature of p-n junctions, and basic transistor design. Aspects of materials and polymer science and photolithography employed in microchip manufacture. May not be repeated.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 250",
+    "title": "Introduction to Interaction Design",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces core concepts of human-computer interaction and design thinking through introductory theory and practice. Explores major pillars of human-centered design such as need finding; prototyping; evaluation; representations and mental models; and aesthetics.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 290",
+    "title": "Topics in Computing",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines current topics and issues associated with computing that are of broad relevance.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 295",
+    "title": "K-12 Computing Education",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5, max. 10",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "DIV",
+      "RSN"
+    ],
+    "description": "Collaboration with community partners to develop computing education opportunities for K-12 students. Curriculum development and basic computing education environments. Prerequisite: either CSS 143, which may be taken concurrently, or a minimum grade of 3.0 in CSS 142. Offered: AWSp.",
+    "prerequisite_text": "either CSS 143, which may be taken concurrently, or a minimum grade of 3.0 in CSS 142",
+    "prerequisite_codes": [
+      "CSS 143",
+      "CSS 142"
+    ],
+    "offered": "AWSp",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 301",
+    "title": "Technical Writing for Computing Professionals",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores the most effective methods of communication based on the common expectations for computing and other engineering professionals. Examines various writing patterns commonly used in technical writing, including compare/contrast, persuasive, process, instructions, and problem/solution, and when/why is used. Prerequisite: either B CUSP 135, B WRIT 135, ENGL 141, ENGL 182, ENGL 197, ENGL 198, ENGL 199, or HCDE 231.",
+    "prerequisite_text": "either B CUSP 135, B WRIT 135, ENGL 141, ENGL 182, ENGL 197, ENGL 198, ENGL 199, or HCDE 231",
+    "prerequisite_codes": [
+      "B CUSP 135",
+      "B WRIT 135",
+      "ENGL 141",
+      "ENGL 182",
+      "ENGL 197",
+      "ENGL 198",
+      "ENGL 199",
+      "HCDE 231"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 305",
+    "title": "Survey of Computer Systems for Teachers",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Survey of computer systems concepts to provide context and understanding for teachers creating K-12 courseware. Includes issues, tradeoffs, and solutions of computer systems, including data structures, networks, databases, human computer interactions, software engineering, and cybersecurity. Non-CSS majors only. Prerequisite: a minimum grade of 2.7 in either CSE 142, CSS 142, or CSS 161; and a minimum grade of 2.0 in CSS 211. Credit/no-credit only.",
+    "prerequisite_text": "a minimum grade of 2.7 in either CSE 142, CSS 142, or CSS 161; and a minimum grade of 2.0 in CSS 211. Credit/no-credit only",
+    "prerequisite_codes": [
+      "CSE 142",
+      "CSS 142",
+      "CSS 161",
+      "CSS 211"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 310",
+    "title": "Information Assurance and Cybersecurity",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Provides theoretical and practical introduction to information assurance and cybersecurity (IAC). Includes methods and practices for securing information and information systems. Covers how vulnerabilities arise, recognizing evolving threats, and mitigating them. Explores the role of risk analysis, information privacy, accountability, and policy. Course overlaps with: INFO 310 and T INFO 310.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "INFO 310 and T INFO 310",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 315",
+    "title": "Cybersecurity Ethics, Policy, and Law",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "SSc"
+    ],
+    "description": "Examines ethics, policy, and law from a cybersecurity perspective, including topics such as: ethics frameworks and philosophical perspectives; professional ethical obligations; ethical decision making; ethical hacking; policy development and implementation; privacy; legal and regulatory issues; state, national, and international cybersecurity law; intellectual property, and cybercrime. Course overlaps with: INFO 351; JSIS B 358; and TCSS 325. Prerequisite: either B WRIT 134 or B WRIT 135.",
+    "prerequisite_text": "either B WRIT 134 or B WRIT 135",
+    "prerequisite_codes": [
+      "B WRIT 134",
+      "B WRIT 135"
+    ],
+    "offered": null,
+    "overlaps_with": "INFO 351; JSIS B 358; and TCSS 325",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 320",
+    "title": "Digital Forensics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc",
+      "RSN"
+    ],
+    "description": "Examines digital forensics techniques in a variety of contexts, such as computers, mobile devices, networks, virtual machines, social media, the cloud, and email. Entire digital forensics process is explored, including investigations, data acquisition, report writing, and expert testimony. A variety of tools and techniques are explored. Differences in Windows, Linux, and Macintosh file systems are examined. Course overlaps with: T INFO 443. Prerequisite: one CSS 100-level course; and either B WRIT 134 or B WRIT 135.",
+    "prerequisite_text": "one CSS 100-level course; and either B WRIT 134 or B WRIT 135",
+    "prerequisite_codes": [
+      "CSS 100",
+      "B WRIT 134",
+      "B WRIT 135"
+    ],
+    "offered": null,
+    "overlaps_with": "T INFO 443",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 330",
+    "title": "Topics in Mathematics for Software Development",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Topics in intermediate mathematics as applied within the context of computer software application development. Topics chosen from the fields of intermediate calculus and finite mathematics.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 337",
+    "title": "Secure Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Prepares students for deploying and operating secure systems on a heterogeneous distributed infrastructure. Covers cybersecurity principles, methods, and tools used to protect against and detect external and internal threats. Addresses ethical and professional issues for cybersecurity personnel. Assumes students have basic computer administration skills. Prerequisite: either CSS 142, CSE 142, or CSS 161; and CSS 310.",
+    "prerequisite_text": "either CSS 142, CSE 142, or CSS 161; and CSS 310",
+    "prerequisite_codes": [
+      "CSS 142",
+      "CSE 142",
+      "CSS 161",
+      "CSS 310"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 340",
+    "title": "Applied Algorithmics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Extends the principles of programming and discrete math (e.g., programming languages, recursion, sorting, computational complexity, mathematical induction, logic concepts, set theory, hash tables, etc.) and applies them to the development, analysis, and implementation of data structures and efficient software. Course overlaps with: T INFO 473. Prerequisite: either a minimum grade of 2.0 in CSS 123 and CSSSKL 123, or a minimum grade of 2.5 in either CSS 133, CSS 143, CSE 143, or CSS 162; and a minimum grade of 2.5 in either STMATH 124 or MATH 124.",
+    "prerequisite_text": "either a minimum grade of 2.0 in CSS 123 and CSSSKL 123, or a minimum grade of 2.5 in either CSS 133, CSS 143, CSE 143, or CSS 162; and a minimum grade of 2.5 in either STMATH 124 or MATH 124",
+    "prerequisite_codes": [
+      "CSS 123",
+      "CSS 133",
+      "CSS 143",
+      "CSE 143",
+      "CSS 162",
+      "MATH 124"
+    ],
+    "offered": null,
+    "overlaps_with": "T INFO 473",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 342",
+    "title": "Data Structures, Algorithms, and Discrete Mathematics I",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Integrating mathematical principles with detailed instruction in computer programming. Explores mathematical reasoning and discrete structures through object-oriented programming. Includes algorithm analysis, basic abstract data types, and data structures. May not be repeated. Course overlaps with: T INFO 473. Prerequisite: a minimum grade of 2.8 in either CSS 133, CSS 143, CSE 143, or CSS 162; and minimum grade of 2.5 in either STMATH 125 or MATH 125.",
+    "prerequisite_text": "a minimum grade of 2.8 in either CSS 133, CSS 143, CSE 143, or CSS 162; and minimum grade of 2.5 in either STMATH 125 or MATH 125",
+    "prerequisite_codes": [
+      "CSS 133",
+      "CSS 143",
+      "CSE 143",
+      "CSS 162",
+      "MATH 125"
+    ],
+    "offered": null,
+    "overlaps_with": "T INFO 473",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 343",
+    "title": "Data Structures, Algorithms, and Discrete Mathematics II",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Develops competencies associated with problem-solving, algorithms, and computational models. Explores algorithm development and analysis; abstract data types including trees, priority queues, heaps, graphs, and hash tables; use of object-oriented design/programming and design patterns; regular expressions; and language modeling. Prerequisite: CSS 301, which may be taken concurrently; and a minimum grade of 2.0 in CSS 342.",
+    "prerequisite_text": "CSS 301, which may be taken concurrently; and a minimum grade of 2.0 in CSS 342",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 350",
+    "title": "Management Principles for Computing Professionals",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Through a team software project, explores critical interpersonal, communication, leadership, decision-making, social, and cultural theories drawn from contemporary research in anthropology, sociology, psychology, and business. Prerequisite: CSS 301, which may be taken concurrently; may not be repeated.",
+    "prerequisite_text": "CSS 301, which may be taken concurrently; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 301"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 360",
+    "title": "Software Engineering",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Surveys the software engineering processes, tools, and techniques used in software development and quality assurance. Topics include life-cycle models, process modeling, requirements analysis and specification techniques, quality assurance techniques, verification and validation, testing, project planning, and management. Prerequisite: either CSS 133, CSS 143, CSE 143, CSS 162, or CSS 173.",
+    "prerequisite_text": "either CSS 133, CSS 143, CSE 143, CSS 162, or CSS 173",
+    "prerequisite_codes": [
+      "CSS 133",
+      "CSS 143",
+      "CSE 143",
+      "CSS 162",
+      "CSS 173"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 370",
+    "title": "Analysis and Design",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Methods and tools to capture and communicate requirements, proposed solutions, and design to management, customers, and software developers. Data, process, and object modeling using languages such as data flow diagrams, entity/relationship diagrams, and unified modeling language use cases and class and sequence diagrams. Prerequisite: 2.0 in CSS 301; 2.0 in CSS 342 or CSS 340; 2.0 in CSS 360; may not be repeated.",
+    "prerequisite_text": "2.0 in CSS 301; 2.0 in CSS 342 or CSS 340; 2.0 in CSS 360; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 342",
+      "CSS 340",
+      "CSS 360"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 371",
+    "title": "The Business of Technology",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Methods for aiding software development, communicating progress to customers/management, and developing marketing strategies for the product. Incorporates social, psychological, and ethical issues. May not be repeated.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 382",
+    "title": "Introduction to Artificial Intelligence",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Principal ideas and developments in artificial intelligence, such as problem solving, knowledge representation, search, reasoning under uncertainty, learning, and natural language processing. Course overlaps with: CSE 415; CSE 473; and TCSS 435. Prerequisite: either a minimum grade of 2.0 in CSS 340, or a minimum grade of 2.0 in CSS 342.",
+    "prerequisite_text": "either a minimum grade of 2.0 in CSS 340, or a minimum grade of 2.0 in CSS 342",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": "CSE 415; CSE 473; and TCSS 435",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 383",
+    "title": "Bioinformatics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc"
+    ],
+    "description": "A project-based introduction to fundamental topics in Bioinformatics. Students develop a working knowledge of computational approaches to analyze biological datasets, including DNA, RNA and protein sequence datasets. Includes topics such as: sequence analysis, alignment, phylogeny, comparative genomics, and biological network analysis. Offered: jointly with B BIO 383; W.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "jointly with B BIO 383; W",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 385",
+    "title": "Introduction to Game Development",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "A&H/NSc"
+    ],
+    "description": "Examines the fundamental issues in designing and developing computer video games; creative and artistic elements, story narration, software architecture, interaction model, mathematic, physics, special effects, and in-game AI logic. Experiences elements in game design: world setting, game play, and interface; and experiences implementing games: conceptualization, prototyping, and play testing. Prerequisite: STMATH 125 or MATH 125; and CSS 340 or CSS 342. Offered: Sp.",
+    "prerequisite_text": "STMATH 125 or MATH 125; and CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "MATH 125",
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": "Sp",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 390",
+    "title": "Special Topics",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines current topics and issues associated with computing and software systems.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 397",
+    "title": "Computing Internship",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 5",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Elective internship project as delineated in a contract between student, faculty advisor, and community sponsor. Prerequisite: CSS 301; CSS 360; and either CSS 340 or CSS 342. Credit/no-credit only. Offered: AWSpS.",
+    "prerequisite_text": "CSS 301; CSS 360; and either CSS 340 or CSS 342. Credit/no-credit only",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 360",
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": "AWSpS",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 405",
+    "title": "Women in STEM Seminar: Career/Professional Life",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1, max. 6",
+      "min": 1,
+      "max": 1
+    },
+    "attributes": [
+      "SSc",
+      "DIV"
+    ],
+    "description": "Develops effective academic strategies for women in science, technology, engineering and mathematics. Explores the representation of women in STEM as they are portrayed in literature and film. Discusses issues of STEM and gender including: earning respect, work-life balance, social issues, connection and networks, job hunting and technical interviews. Credit/no-credit only.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 411",
+    "title": "Computing Technology and Public Policy",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "SSc"
+    ],
+    "description": "In depth investigation of economical, political, organizational, and societal ramifications of using computing technology. Evaluates current policy approaches, determines trends, and proposes changes. Topics vary by quarter. Prerequisite: a minimum grade of 2.0 in CSS 301.",
+    "prerequisite_text": "a minimum grade of 2.0 in CSS 301",
+    "prerequisite_codes": [
+      "CSS 301"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 415",
+    "title": "Emerging Topics in Information Assurance and Cybersecurity",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 15",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores emerging topics and unique subjects in information assurance and cybersecurity (IAC) not otherwise covered in the IAC curriculum. Prerequisite: either CSS 310, INFO 310, or T INFO 310.",
+    "prerequisite_text": "either CSS 310, INFO 310, or T INFO 310",
+    "prerequisite_codes": [
+      "CSS 310",
+      "INFO 310",
+      "T INFO 310"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 416",
+    "title": "Ethical Hacking and Penetration Testing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines ethical hacking and penetration testing tools, techniques, and methods. Will learn, understand, and execute ethical hacking and penetration testing in a manner similar to a would-be adversary so that effective defenses may later be used to counter malicious attacks. The phases of hacking and ethical considerations will also be examined. Prerequisite: either CSS 310, INFO 310, or T INFO 310.",
+    "prerequisite_text": "either CSS 310, INFO 310, or T INFO 310",
+    "prerequisite_codes": [
+      "CSS 310",
+      "INFO 310",
+      "T INFO 310"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 421",
+    "title": "Introduction to Hardware and Operating Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "NSc"
+    ],
+    "description": "An introduction to the architecture of modern microprocessors and operating systems. Examines the basic theories and concepts of how hardware and software cooperatively interact to accomplish real-world tasks. Prerequisite: CSS 301; and either CSS 340 or CSS 342.",
+    "prerequisite_text": "CSS 301; and either CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 422",
+    "title": "Hardware and Computer Organization",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "An introduction to the architecture, operation, and organization of a modern computing machine. Topics covered include basic logic operations, state-machines, register models, memory organization, peripherals, and system issues. Assembly language taught in order to understand the instruction set architecture and memory model of the computer. May not be repeated. Prerequisite: CSS 342.",
+    "prerequisite_text": "CSS 342",
+    "prerequisite_codes": [
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 427",
+    "title": "Introduction to Embedded Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduction to the process of specifying and designing embedded systems. Follows the embedded systems development; software and hardware partitioning, processor selection, real-time operating systems, coding in assembly language and C, debugging, and testing. Lab experiments reinforce fundamental concepts using embedded design and debug tools. Course overlaps with: B ME 460; CSE 474/E E 474; and TCES 460. Prerequisite: CSS 342; and either B EE 425 or CSS 422, which may be taken concurrently.",
+    "prerequisite_text": "CSS 342; and either B EE 425 or CSS 422, which may be taken concurrently",
+    "prerequisite_codes": [
+      "CSS 342",
+      "B EE 425",
+      "CSS 422"
+    ],
+    "offered": null,
+    "overlaps_with": "B ME 460; CSE 474/E E 474; and TCES 460",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 430",
+    "title": "Operating Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Principles of operating systems, including process management, memory management, auxiliary storage management, and resource allocation. Focus on the structure of the popular desktop and real-time operating systems. May not be repeated. Course overlaps with: CSE 451 and TCES 420. Prerequisite: a minimum grade of 2.0 in CSS 343.",
+    "prerequisite_text": "a minimum grade of 2.0 in CSS 343",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": "CSE 451 and TCES 420",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 431",
+    "title": "Network Architecture and Management",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Examines configuring, deploying, managing, maintaining, and troubleshooting network infrastructure. OSI and TCP reference models, TCP/IP suite of protocols, LANs, WANs, design methodologies, security, firewalls, VPNs, IDSs, IPSs, VOIP, packet vs. circuit switching, router configuration, ICMP, SDN, cloud design and operations, data centers, and optimization are explored. Oriented toward network operations. Course equivalent to: T INFO 250. Course overlaps with: CSE 461; INFO 314; TCES 425; and TCSS 430.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "CSE 461; INFO 314; TCES 425; and TCSS 430",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 432",
+    "title": "Network Design and Programming",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Examines OSI architecture, TCP/IP protocols, data link networks, packet switching, routing, routing protocols, security, performance evaluation, flow control, and congestion control. Networks are explored in the context of protocol development, implementation, writing of functionality, and inter-process communication facilities (e.g., sockets, pipes, RPC). Oriented toward networking programming and performance evaluation experiments. Prerequisite: a minimum grade of 2.0 in CSS 343; recommended: CSS 430.",
+    "prerequisite_text": "a minimum grade of 2.0 in CSS 343; recommended: CSS 430",
+    "prerequisite_codes": [
+      "CSS 343",
+      "CSS 430"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 434",
+    "title": "Parallel and Distributed Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Concepts and design of parallel and distributed computing systems. Topics include: fundamentals of OS, network and MP systems; message passing; remote procedure calls; process migration and mobile agents; distributed synchronization; distributed shared memory; distributed file system; fault tolerance; and grid computing. Prerequisite: CSS 343.",
+    "prerequisite_text": "CSS 343",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 436",
+    "title": "Cloud Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Pragmatic, program-oriented overview of cloud computing covering key cloud technologies and components which enable and constitute the cloud (such as virtualization, compute, storage, network, and security). Evaluation of trade-offs in building, migrating to, and using cloud services and systems. Investigation of architectural and theoretical underpinnings of cloud services, including choices in monitoring, scalability and availability. Course overlaps with: TCSS 462. Prerequisite: either CSS 430 or CSS 432. Offered: WSp.",
+    "prerequisite_text": "either CSS 430 or CSS 432",
+    "prerequisite_codes": [
+      "CSS 430",
+      "CSS 432"
+    ],
+    "offered": "WSp",
+    "overlaps_with": "TCSS 462",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 444",
+    "title": "Analyzing Biases in the Age of Digital Data",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "DIV"
+    ],
+    "description": "Introduction to the algorithms of machine learning that are applied in the real world, considering biases, methodological limitations, and pitfalls of data. It provides students with a framework for analyzing the social, political issues, enabling them to think critically about ethical boundaries. The topics of the course draw from classical statistics, machine learning, ethics and privacy. Course overlaps with: STAT 303. Prerequisite: CSS 301; and either CSS 340 or CSS 342; recommended: experience coding non-trivial functions to manipulate datasets; and previous coursework in probability, statistics, and algorithms.",
+    "prerequisite_text": "CSS 301; and either CSS 340 or CSS 342; recommended: experience coding non-trivial functions to manipulate datasets; and previous coursework in probability, statistics, and algorithms",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": "STAT 303",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 448",
+    "title": "Introduction to Compilers",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduction to the structures and organization of programming languages; fundamentals of translation; regular expressions and context-free grammars; syntax and lexical analysis, symbol tables, semantics and parsing, code generation; translation techniques such as LR, LL, and recursive descent. Prerequisite: CSS 343; may not be repeated.",
+    "prerequisite_text": "CSS 343; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 449",
+    "title": "Design and Analysis of Algorithms",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces fundamental techniques for algorithm design and analysis, such as computational complexity, greedy algorithms, divide-and-conquer algorithms, dynamic programming, graph algorithms, randomized algorithms, and computational intractability. Course overlaps with: CSE 421. Prerequisite: CSS 343.",
+    "prerequisite_text": "CSS 343",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": "CSE 421",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 450",
+    "title": "Computer Graphics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces the fundamental concepts in computer graphics: camera model, illumination models, hardware shading, transformation pipeline, scene graphs, texture mapping, and simple modeling and animation techniques. Prerequisite: minimum grade of 2.0 in CSS 342; may not be repeated.",
+    "prerequisite_text": "minimum grade of 2.0 in CSS 342; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 451",
+    "title": "3-D Computer Graphics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces practical and popular three-dimensional (3-D) graphic algorithms. Examines modeling (how to build 3-D objects), animation (how to describe the motion of objects), and rendering (how to generate images of 3-D objects in animation). Prerequisite: CSS 342; and STMATH 125 or MATH 125.",
+    "prerequisite_text": "CSS 342; and STMATH 125 or MATH 125",
+    "prerequisite_codes": [
+      "CSS 342",
+      "MATH 125"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 452",
+    "title": "Game Engine Development",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Studies the technical fundamentals and implementation details of a game engine. Topics include software architecture, input, resource management, textures, animation, coordinate systems, object behaviors and interactions, camera manipulations, illumination and special effects, physics, and scene management. Prerequisite: a minimum grade of 2.0 in either CSS 340 or CSS 342; a minimum grade of 2.0 in CSS 360; and a minimum grade of 2.0 in either STMATH 125 or MATH 125.",
+    "prerequisite_text": "a minimum grade of 2.0 in either CSS 340 or CSS 342; a minimum grade of 2.0 in CSS 360; and a minimum grade of 2.0 in either STMATH 125 or MATH 125",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342",
+      "CSS 360",
+      "MATH 125"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 455",
+    "title": "Introduction to Computational Science and Scientific Programming",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduction to principles and fundamental algorithms of scientific computing, including applied linear algebra and numerical methods. Group projects address current computational problems in the physical, biological, and life sciences. Course overlaps with: STMATH 405 and STMATH 406. Prerequisite: either STMATH 125 or MATH 125; and either CSS 133, CSS 143, CSE 143, CSS 162, or CSS 173.",
+    "prerequisite_text": "either STMATH 125 or MATH 125; and either CSS 133, CSS 143, CSE 143, CSS 162, or CSS 173",
+    "prerequisite_codes": [
+      "MATH 125",
+      "CSS 133",
+      "CSS 143",
+      "CSE 143",
+      "CSS 162",
+      "CSS 173"
+    ],
+    "offered": null,
+    "overlaps_with": "STMATH 405 and STMATH 406",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 457",
+    "title": "Signal Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "How data collected from the real world is captured, represented, processed, and stored in computers. Topics include digitization, digital signal processing, filtering, compression, and how signal processing is used as part of larger systems, such as multimedia, IoT, and machine learning. May not be repeated. Prerequisite: CSS 340 or CSS 342; and STMATH 208.",
+    "prerequisite_text": "CSS 340 or CSS 342; and STMATH 208",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 458",
+    "title": "Fundamentals of Computer Simulation Theory and Application",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers all aspects of computer simulation including theory, implementation, and application. Presents real-life interdisciplinary examples. Final student project models a real-life situation with a computer simulation. Prerequisite: CSS 340 or CSS 342.",
+    "prerequisite_text": "CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 461",
+    "title": "Software Project Management",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Fundamental skills required for effective software project management, including project planning and tracking and people management. Topics include risk analysis, project scope, scheduling, resource allocation, cost estimation, negotiation, monitoring and controlling schedule, software metrics, quality management, process improvement, staffing, leadership, motivation, and team building. Prerequisite: CSS 360, may not be repeated.",
+    "prerequisite_text": "CSS 360, may not be repeated",
+    "prerequisite_codes": [
+      "CSS 360"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 473",
+    "title": "Entrepreneurship Seminar",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Creates or works within a new venture. New venture situations include for-profit and non-profit companies and launching new products/services within existing companies. Develops a business plan. Prerequisite: a minimum grade of 1.7 in B BUS 220/BIS 200. Offered: jointly with B BUS 443.",
+    "prerequisite_text": "a minimum grade of 1.7 in B BUS 220/BIS 200",
+    "prerequisite_codes": [
+      "B BUS 220",
+      "BIS 200"
+    ],
+    "offered": "jointly with B BUS 443",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 474",
+    "title": "Product Development Lab",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Includes a technology project and product development within the dynamic of time-pressured competition. Focuses on systematically improving products to beat competition and win the customer. Topics include benchmarking, competitive intelligence, and managing small group product development. Offered: jointly with B BUS 444.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "jointly with B BUS 444",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 475",
+    "title": "Database Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Methods for obtaining requirements and designing database systems; differences between hierarchical, relational, and network database designs; techniques for designing and coding effective reporting procedures. Course overlaps with: TBANLT 411. Prerequisite: CSS 360 or B IMD 351.",
+    "prerequisite_text": "CSS 360 or B IMD 351",
+    "prerequisite_codes": [
+      "CSS 360",
+      "B IMD 351"
+    ],
+    "offered": null,
+    "overlaps_with": "TBANLT 411",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 477",
+    "title": "Foundations of Secure Software Development",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Examines principles and techniques for developing secure software. Secure engineering, design and coding principles are introduced with a focus on breadth over depth including topics such as secure development lifecycle, known vulnerabilities, common attack profiles, threat modeling, access controls, encryption techniques, error handling, and secure quality assurance. Course overlaps with: TCSS 483. Prerequisite: CSS 343 and CSS 360.",
+    "prerequisite_text": "CSS 343 and CSS 360",
+    "prerequisite_codes": [
+      "CSS 343",
+      "CSS 360"
+    ],
+    "offered": null,
+    "overlaps_with": "TCSS 483",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 478",
+    "title": "Usability and User-Centered Design",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Application of human information processing models, theories and human-computer interaction principles for designing interactive systems. Emphasis is on how usability methods could be incorporated into the system design lifecycle. Topics include user survey, heuristic evaluation, task analysis and experimental testing. Prerequisite: either CSS 360 or B IMD 351; may not be repeated.",
+    "prerequisite_text": "either CSS 360 or B IMD 351; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 360",
+      "B IMD 351"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 480",
+    "title": "Principles of Human-Computer Interaction",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines fundamentals of human perception, human cognition, attention and memory constraints; role of user experience and intelligence; input and output devices; standards compliance; design of systems for individual versus collaborative work settings; rapid prototyping, user-centered design techniques, and design evaluation methods. May not be repeated. Prerequisite: CSS 360.",
+    "prerequisite_text": "CSS 360",
+    "prerequisite_codes": [
+      "CSS 360"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 481",
+    "title": "Web Programming and Applications",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines the core web development technologies used to design, build and support web-based applications. Introduce various web programming languages. creates interactive media projects, including applying programming constructs, incorporating text and multimedia contents, and using standard web communication formats. Prerequisite: CSS 342 and CSS 475.",
+    "prerequisite_text": "CSS 342 and CSS 475",
+    "prerequisite_codes": [
+      "CSS 342",
+      "CSS 475"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 482",
+    "title": "Expert Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Theory and application of expert systems: computer systems that capture and use human expertise. Applications include computer configuration, fault diagnosis, computer-aided instruction, data interpretation, planning and prediction, and process control. Prerequisite: CSS 343; may not be repeated.",
+    "prerequisite_text": "CSS 343; may not be repeated",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 483",
+    "title": "Bioinformatics Algorithms",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers basic molecular biology to aid in the understanding of current bioinformatics problems that need computational tools. Explores fundamental bioinformatics algorithms of current and future bioinformatics systems. Students implement algorithms on practical biology problems. Prerequisite: CSS 340 or CSS 342.",
+    "prerequisite_text": "CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 484",
+    "title": "Multimedia Data Processing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces the concepts, issues, design, implementation, standards and applications of multimedia technologies. Discusses the characteristics, compression and processing of digital multimedia data. Prerequisite: CSS 340 or CSS 342.",
+    "prerequisite_text": "CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 485",
+    "title": "Artificial Neural Networks",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Application of biological computing principles to machine problem solving. State of the art in artificial neural networks (ANNs), including vision, motor control, learning, data analysis. Topics include ANN architectures, algorithms: perceptrons, Widrow-Hoff, backpropagation, Hebbian networks. May not be repeated. Prerequisite: CSS 343 and STMATH 208.",
+    "prerequisite_text": "CSS 343 and STMATH 208",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 486",
+    "title": "Machine Intelligence",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [
+      "RSN"
+    ],
+    "description": "Basic machine learning (ML) and artificial intelligence (AI) methods and the related techniques used in modern AI systems. Students learn about both the theory of the algorithms and the challenges of implementing them in a modern programming language. Course overlaps with: CSE 416/STAT 416 and TCSS 435. Prerequisite: STMATH 208 and CSS 343; recommended: coursework in probability and statistics; linear algebra; and discrete math.",
+    "prerequisite_text": "STMATH 208 and CSS 343; recommended: coursework in probability and statistics; linear algebra; and discrete math",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": "CSE 416/STAT 416 and TCSS 435",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 487",
+    "title": "Computer Vision",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Methods for extracting content from digital images. Topics typically include linear filters, edge detection, segmentation, stereo vision, motion estimation, and object recognition. Examines applications of computer vision, such as image databases and robot navigation. Prerequisite: CSS 343.",
+    "prerequisite_text": "CSS 343",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 488",
+    "title": "Natural Language Processing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces students to the fundamentals of Natural Language Processing (NLP), a subfield of linguistic and computer science that focuses on the interaction between computers and human language. Covers the essential concepts, techniques, and tools used in Natural Language Processing (NLP) and focuses on practical applications. Course overlaps with: CSE 447 and TCSS 456. Prerequisite: a minimum grade of 2.0 in CSS 343; recommended: familiarity with Python. Offered: Sp.",
+    "prerequisite_text": "a minimum grade of 2.0 in CSS 343; recommended: familiarity with Python",
+    "prerequisite_codes": [
+      "CSS 343"
+    ],
+    "offered": "Sp",
+    "overlaps_with": "CSE 447 and TCSS 456",
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 490",
+    "title": "Special Topics in Computing and Software Systems",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 20",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines current topics and issues associated with computing and software systems. Offered: AWSpS.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "AWSpS",
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 495",
+    "title": "Applied Computing Internship",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Elective completion of a work project as delineated in a contract between student, faculty advisor, and community sponsor. Prerequisite: CSS 350; CSS 360; CSS 421. Credit/no-credit only.",
+    "prerequisite_text": "CSS 350; CSS 360; CSS 421. Credit/no-credit only",
+    "prerequisite_codes": [
+      "CSS 350",
+      "CSS 360",
+      "CSS 421"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 496",
+    "title": "Applied Computing Capstone",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Group seminar project requires software development and research project in applied computing. Objectives include: integrating minor or concentration with computing, reviewing professional literature, writing technical documents, and presenting project results to technologists/end-users. Prerequisite: CSS 301; CSS 360; CSS 421; and either CSS 340 or CSS 342.",
+    "prerequisite_text": "CSS 301; CSS 360; CSS 421; and either CSS 340 or CSS 342",
+    "prerequisite_codes": [
+      "CSS 301",
+      "CSS 360",
+      "CSS 421",
+      "CSS 340",
+      "CSS 342"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 497",
+    "title": "Computer Science and Software Engineering Capstone",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-10, max. 10",
+      "min": 1,
+      "max": 10
+    },
+    "attributes": [],
+    "description": "Completion of project as delineated in a contract between student, faculty advisor, and community sponsor. Prerequisite: CSS 350; CSS 370; CSS 422; CSS 430; two additional CSS courses.",
+    "prerequisite_text": "CSS 350; CSS 370; CSS 422; CSS 430; two additional CSS courses",
+    "prerequisite_codes": [
+      "CSS 350",
+      "CSS 370",
+      "CSS 422",
+      "CSS 430"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 498",
+    "title": "Independent Study",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Individual study by arrangement with instructor.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 499",
+    "title": "Undergraduate Research",
+    "credits": 0,
+    "credits_detail": {
+      "raw": "0-5, max. 10",
+      "min": 0,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Design and implementation of a research study as specified in a contract with a faculty member.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "undergraduate"
+  },
+  {
+    "code": "CSS 501",
+    "title": "Data Structures and Object-Oriented Programming I",
+    "credits": 4,
+    "credits_detail": {
+      "raw": "4",
+      "min": 4,
+      "max": 4
+    },
+    "attributes": [],
+    "description": "Covers data structures and object-oriented programming. Studies basic and advanced data types, their uses, and implementations. Students design solutions to programming problems using object-oriented techniques with various data types. Covers algorithms and their tradeoffs. Uses modern software engineering practices.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 502",
+    "title": "Data Structures and Object-Oriented Programming II",
+    "credits": 4,
+    "credits_detail": {
+      "raw": "4",
+      "min": 4,
+      "max": 4
+    },
+    "attributes": [],
+    "description": "Covers advanced data structures including trees, balanced trees, heaps, graphs, and hash tables along with associated algorithms. Covers object-oriented programming with a focus on design and implementation of problems using inheritance and polymorphism. Introduces formal automata theory. Prerequisite: minimum grade of 2.7 in CSS 501.",
+    "prerequisite_text": "minimum grade of 2.7 in CSS 501",
+    "prerequisite_codes": [
+      "CSS 501"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 503",
+    "title": "Systems Programming",
+    "credits": 4,
+    "credits_detail": {
+      "raw": "4",
+      "min": 4,
+      "max": 4
+    },
+    "attributes": [],
+    "description": "Examines the logical design and programming aspects of operating systems and network communication. Topics include processes, threads, synchronization, deadlocks, memory management, virtual memory, file systems, and client-server network programming. Prerequisite: minimum grade of 2.7 in CSS 502.",
+    "prerequisite_text": "minimum grade of 2.7 in CSS 502",
+    "prerequisite_codes": [
+      "CSS 502"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 506",
+    "title": "Software Development Processes",
+    "credits": 2,
+    "credits_detail": {
+      "raw": "2",
+      "min": 2,
+      "max": 2
+    },
+    "attributes": [],
+    "description": "Provides a foundation in software engineering processes, methods, and practices associated with prescriptive and agile software process models. Includes the creation of artifacts commonly used to communicate, justify, and manage computing projects.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 507",
+    "title": "Software Modeling Techniques",
+    "credits": 2,
+    "credits_detail": {
+      "raw": "2",
+      "min": 2,
+      "max": 2
+    },
+    "attributes": [],
+    "description": "Provides the concepts and skills needed to use modeling in software analysis and design to foster understanding and communications of a problem and its potential solutions. Includes the creation of modeling artifacts for projects by hand and using CASE tools. Prerequisite: a minimum grade of 2.7 in CSS 506.",
+    "prerequisite_text": "a minimum grade of 2.7 in CSS 506",
+    "prerequisite_codes": [
+      "CSS 506"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 508",
+    "title": "Software Testing and Quality",
+    "credits": 2,
+    "credits_detail": {
+      "raw": "2",
+      "min": 2,
+      "max": 2
+    },
+    "attributes": [],
+    "description": "Reviews approaches, concepts, and techniques used to validate and verify software and methods used to improve software processes. Students reflect on the applicability of software engineering and computer science methods. Prerequisite: a minimum grade of 2.7 in CSS 507.",
+    "prerequisite_text": "a minimum grade of 2.7 in CSS 507",
+    "prerequisite_codes": [
+      "CSS 507"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 514",
+    "title": "Security, Policy, Ethics, and the Legal Environment",
+    "credits": 2,
+    "credits_detail": {
+      "raw": "2",
+      "min": 2,
+      "max": 2
+    },
+    "attributes": [],
+    "description": "Addresses ethical, legal, and policy frameworks within which information assurance and secure development lifecycle professionals must practice. Covers ethical, moral, legal and policy issues related to computers and telecommunications systems, such as how they impact privacy, fair information practices, equity, content control, and freedom of electronic speech.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 515",
+    "title": "Contemporary Issues in Information Assurance",
+    "credits": 2,
+    "credits_detail": {
+      "raw": "2",
+      "min": 2,
+      "max": 2
+    },
+    "attributes": [],
+    "description": "Addresses current developments in information assurance and cybersecurity, such as the changing threat spectrum, legal developments, international relationships, and intellectual property protection with an emphasis on the ethical and moral perspectives. Covers communities and resources important to becoming a responsible professional in the security field.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 517",
+    "title": "Information Assurance and Cybersecurity",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores information assurance and cybersecurity for engineering and operational environments including topics such as: secure development lifecycle; policy development and implementation; ethical obligations; risk management; security operations; common threats, vulnerabilities, and exploits; confidentiality, integrity, and availability; cryptology; information lifecycle; privacy considerations; legal and regulatory issues, and governance.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 518",
+    "title": "Human Factors in Cybersecurity",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Humans are considered the weakest link in cybersecurity. Regardless of the robustness of technical solutions, without an understanding and appreciation for the human factors, there will continue to be significant compromises. This course examines the human factors involved in cybersecurity, including behavioral, psychological, social, technical, and usability components.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 519",
+    "title": "Incident Response and Risk Management",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Risk management and incident response from an information assurance and cybersecurity perspective, including topics such as: risk management; risk assessments; threat, vulnerability and exploit analysis; risk prioritization; risk mitigation; business impact analysis; business continuity planning; disaster recovery planning; incident response and recovery; compliance; and audits.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 520",
+    "title": "Cyber Warfare, Policy, and the Modern State",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores cybersecurity as a key element of national security and global politics. Examines how nation-states, criminal organizations, and hacktivist groups use cyber operations to project power, disrupt infrastructure, steal intellectual property, & influence political processes. Analyzes global cyber threats through a national security and international policy lens, including cyber warfare, espionage, terrorism, & emerging governance frameworks. Course overlaps with: JSIS B 555; JSIS B 581; and T INFO 580.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "JSIS B 555; JSIS B 581; and T INFO 580",
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 527",
+    "title": "Cryptography and Information Assurance",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores the theory and application of cryptography from a computer science perspective. Examines the mathematical background, implementation, and deployment of cryptographic algorithms for symmetric and asymmetric encryption, hashing, and digital signatures. Discusses applications of cryptography to build and deploy secure systems. Prerequisite: either CSS 517, which may be taken concurrently or permission of instructor.",
+    "prerequisite_text": "either CSS 517, which may be taken concurrently or permission of instructor",
+    "prerequisite_codes": [
+      "CSS 517"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 532",
+    "title": "Internet of Things",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Studies the fundamental knowledge and technologies, implementation details, and the latest research findings of Internet of Things. Topics may include IoT components, IoT system architectures, cloud computing services for IoT, network protocols and standards for IoT, and IoT application development. Recommended: Computer networks, distributed systems, cloud computing.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 533",
+    "title": "Distributed Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Builds on knowledge of advanced programming methodologies in distributed computing. Topics include message passing, indirect communication, remote method invocation, distributed objects, multi-tier server-side programming, peer-to-peer systems, distributed synchronization, distributed check-pointing, and replica management.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 534",
+    "title": "Parallel Programming in Grid and Cloud",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Exploration of theoretical programming methodology and practical middleware design used for parallel programming in grid and cloud systems. Uses different programming models, parallelizing patterns, and middleware systems for designing application-specific fault-tolerant parallel software.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 535",
+    "title": "High Performance Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers the essential theories, principles, concepts, and practices related to designing, implementing, evaluating, and using high-performance computing systems. These include ways to reason about issues arising from the use of homogeneous and heterogeneous combinations of memory and computational resources (e.g. CPUs and GPUs), data, algorithms, and application domains.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 537",
+    "title": "Network and System Security",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines the theory and practice of network security, the role of cryptography, and the current state of the art in building secure networked systems. Covers topics such as access control, authentication, perimeter security defense, firewalls, virtual private networks, intrusion detection systems, and wireless security and network security auditing tools. Course overlaps with: TCSS 576.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "TCSS 576",
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 538",
+    "title": "Security in Emerging Wireless and Mobile Networks",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines the security issues associated with various emerging wireless, mobile networks, and pervasive systems. Covers topics such as MAC layer and routing layer security; robust localization; trust and reputation mechanisms; mobile malwares; authentication solutions; and machine learning based intrusion detection techniques. Course overlaps with: TCSS 576.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": "TCSS 576",
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 539",
+    "title": "Cybersecurity in Emerging Environments",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores security issues and solutions in emerging environments and non-traditional computing platforms such as vehicular networks, mobile phone systems, and pervasive systems. Also covers topic such as usable security, managing trade-offs in resource-constrained systems, and reasoning with uncertain information.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 545",
+    "title": "Mobile Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers concepts related to systems once can build located at the intersections of pocket size computing devices; location aware technologies; mobile web services; and integrated sensors such as touch- and gesture-based UIs. Uses programming projects to explore the concepts and application in each area, and enable students to define a final project to combine and intersect the above areas.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 548",
+    "title": "Introduction to Compilers",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces the structures and organization of programming languages; fundamentals of translation; regular expressions and context-free grammars; syntax lexical analysis, symbol tables, semantics and parsing, code generation; translation techniques such as LR, LL, and recursive descent. Offered: A.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "A",
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 549",
+    "title": "Algorithm Design and Analysis",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers fundamental techniques for algorithm design and analysis, such as computational complexity, greedy algorithms, divide-and-conquer algorithms, dynamic programming, graph algorithms, randomized algorithms, and computational intractability. Cannot be taken if credit received for CSS 449.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 551",
+    "title": "Advanced 3D Computer Graphics",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examine topics and issues associated with the design and implementation of commercial-scale graphical applications including: system architecture, user interaction models, and issues and algorithms in modeling, animation, and rendering. Cannot be taken if credit received for CSS 451. Recommended: Data Structures, Algorithms, Linear Algebra.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 552",
+    "title": "Topics in Rendering",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Studies core algorithms and technologies in synthesizing high quality images, including: camera models, 3D viewing, visibility sampling and approximation, light source models, material property approximation, illumination models, human vision system, and texture synthesis. Prerequisite: CSS 451. Offered: W.",
+    "prerequisite_text": "CSS 451",
+    "prerequisite_codes": [
+      "CSS 451"
+    ],
+    "offered": "W",
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 553",
+    "title": "Software Architecture",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Studies the concepts, representations techniques, development methods, and tools for structuring software systems. Topics include domain-specific software architectures, architecture description languages, architectural styles, product line architectures, and standards. Combines hands-on experience designing software with an understanding of recent developments in the field.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 555",
+    "title": "Evaluating Software Design",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Studies best software engineering practices and methods used in prescriptive and agile approached to create and evaluate software design from an quality principled point-of-view. Considers design from quality dimensions such as performance, scalability, maintainability, usability, and security.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 565",
+    "title": "Research Methods in Software Development",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "In-depth study of research design and data analysis techniques for computing-related research activities. Students prepare a research proposal; examine experimental, quasi-experimental, and qualitative design strategies; perform meta-analytic research, define and collect appropriate software metrics; and perform appropriate advanced statistical analyses.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 566",
+    "title": "Software Management",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers theories, principles, and practices that are designed to enable project managers and other related stakeholders as they assess, choose, and use appropriate frameworks, tools, techniques, and metrics to guide software projects toward successful completion or termination.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 572",
+    "title": "Evidence-Based Design",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Provides a foundation in evidence-based user-centered design theory, methods, and practices for creating innovative software-enabled products.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 576",
+    "title": "Cybersecurity and Artificial Intelligence",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines the interaction of artificial intelligence and cybersecurity. Covers topics such as data acquisition, model training, applications of AI to cybersecurity, the interaction of AI and humans in security, and securing AI-based systems. Recommended: familiarity with applied machine learning or cybersecurity concepts. Offered: W.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "W",
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 577",
+    "title": "Secure Software Development",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Examines secure design and secure coding principles, practices, and methods including least privilege, threat modeling, and static analysis. Covers common vulnerabilities such as buffer overruns, integer overflows, injection attacks, cross-site scripting, and weak error handling in detail.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 578",
+    "title": "Ethical Penetration Testing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores ethical hacking and penetration testing tools, vulnerability analysis and exploitation, and defense techniques. Covers topics such as reconnaissance, OS fingerprinting, remote network mapping, web application, software and network vulnerabilities, attack surface analysis, fuzz testing, exploitation of vulnerabilities, credential gathering, and privilege escalation.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 579",
+    "title": "Malware and Attack Reverse Engineering",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores techniques and technologies for understanding the operation of malicious software and attacks. Discusses and explores techniques for detection, identification and prevention. Presents reverse engineering of code and network exploits as a method for understanding and development of countermeasures.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 581",
+    "title": "Machine Learning",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Theory and practical use of machine learning techniques, such as decision trees, logistic regression, discriminant analysis, neural networks, naive Bayes, k-nearest neighbor, support vector machines, collaborative filtering, clustering, and ensembles. Emphasizes hands-on experience with real-world datasets, combined with several programming projects.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 582",
+    "title": "Interpretable Machine Learning in Applications",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Introduces core machine learning (ML) algorithms with applications. Emphasizes interpretable ML methods and metrics for assessing fairness, accountability and transparency in data, models, and results. Addresses ethical considerations - justice, responsibility and trust. Covers research methodologies including literature review, proposal writing, experimental design, presentation and final reporting. Prerequisite: either CSS 343, CSS 502, CSS 549, or equivalent (advanced algorithms). Offered: S.",
+    "prerequisite_text": "either CSS 343, CSS 502, CSS 549, or equivalent (advanced algorithms)",
+    "prerequisite_codes": [
+      "CSS 343",
+      "CSS 502",
+      "CSS 549"
+    ],
+    "offered": "S",
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 583",
+    "title": "Knowledge Management Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Explores contemporary theoretical and practical implications of how to create and manage knowledge as acquired using technology. Uses different strategies such as XML, RDF, RDFS, and other approaches to provide methods and structures to organize and reference data for use within a variety of knowledge domains.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 584",
+    "title": "Multimedia Database Systems",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Discusses core concepts for multimedia data representation and compression. Introduces state-of-the-art techniques for multimedia data processing; compression, indexing and retrieval. Examines various multimedia systems; tools and applications.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 586",
+    "title": "Deep Learning and Artificial Intelligence",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Develops an understanding of deep learning and explores new research directions and applications in artificial intelligence. Explores a selected list of new, cutting-edge topics such as convolutional neural networks, generative models, and deep geometric learning. Discusses new application domains of deep learning such as autonomous driving and protein structure prediction. Basic understanding of machine learning is required. Prerequisite: CSS 581.",
+    "prerequisite_text": "CSS 581",
+    "prerequisite_codes": [
+      "CSS 581"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 587",
+    "title": "Advanced Topics in Computer Vision",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Covers advanced topics in computer vision. Includes image and video databases, object recognition, video processing, scene reconstruction, and robot vision. Students implement projects on current topics in computer vision research.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 590",
+    "title": "Special Topics in Computing",
+    "credits": 5,
+    "credits_detail": {
+      "raw": "5, max. 15",
+      "min": 5,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Special topics in computer science and software engineering. Prerequisite: permission of instructor.",
+    "prerequisite_text": "permission of instructor",
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 593",
+    "title": "Cybersecurity Engineering Capstone",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Students apply their knowledge and skills related to cybersecurity engineering in a culminated capstone project. Prerequisite: minimum grade of 2.7 in each of CSS 514, CSS 517, CSS 519, CSS 527, CSS 537, CSS 577, and CSS 578.",
+    "prerequisite_text": "minimum grade of 2.7 in each of CSS 514, CSS 517, CSS 519, CSS 527, CSS 537, CSS 577, and CSS 578",
+    "prerequisite_codes": [
+      "CSS 514",
+      "CSS 517",
+      "CSS 519",
+      "CSS 527",
+      "CSS 537",
+      "CSS 577",
+      "CSS 578"
+    ],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 595",
+    "title": "Master's Project",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-10, max. 40",
+      "min": 1,
+      "max": 10
+    },
+    "attributes": [],
+    "description": "Students apply their knowledge and skills related to computer science and software engineering in a culminating capstone project. Credit/no-credit only.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 599",
+    "title": "Faculty Research Seminar",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1",
+      "min": 1,
+      "max": 1
+    },
+    "attributes": [],
+    "description": "Weekly seminars on current research topics in computer science, software engineering, or cybersecurity engineering.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 600",
+    "title": "Independent Study or Research",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-10, max. 30",
+      "min": 1,
+      "max": 10
+    },
+    "attributes": [],
+    "description": "Independent study or research on computing topics conducted under the direction of one or more instructors. Offered: AWSpS.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": "AWSpS",
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 601",
+    "title": "Internship",
+    "credits": 1,
+    "credits_detail": {
+      "raw": "1-5, max. 10",
+      "min": 1,
+      "max": 5
+    },
+    "attributes": [],
+    "description": "Graduate internship under the supervision of a CSS faculty member.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  },
+  {
+    "code": "CSS 700",
+    "title": "Master's Thesis",
+    "credits": 0,
+    "credits_detail": {
+      "raw": "variable",
+      "min": null,
+      "max": null
+    },
+    "attributes": [],
+    "description": "Master's thesis research.",
+    "prerequisite_text": null,
+    "prerequisite_codes": [],
+    "offered": null,
+    "overlaps_with": null,
+    "level": "graduate"
+  }
+]

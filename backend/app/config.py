@@ -21,9 +21,18 @@ class Settings(BaseSettings):
     api_host: str = "localhost"
     api_port: int = 8000
 
-    # LLM Configuration
+    # LLM Configuration (legacy OpenAI path — kept but optional)
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4"
+
+    # Gemini File Search RAG (preferred). Set gemini_api_key to enable.
+    # gemini_file_search_store is produced by scripts/build_file_search_store.py;
+    # without it, the RAG runs in "inline context" mode (catalog stuffed into
+    # the prompt) instead of using a hosted File Search store.
+    gemini_api_key: Optional[str] = None
+    gemini_model: str = "gemini-2.0-flash"
+    gemini_embedding_model: str = "gemini-embedding-001"
+    gemini_file_search_store: Optional[str] = None
 
     # Vector Store Configuration
     pinecone_api_key: Optional[str] = None
