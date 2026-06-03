@@ -52,6 +52,7 @@ class ScheduleBuilder:
 
         avoid_days = set(constraints.get("avoid_days") or [])
         preferred_days = set(constraints.get("preferred_days") or [])
+        time_windows = constraints.get("time_windows") or []
         max_credits = constraints.get("max_credits") or 18
         min_credits = constraints.get("min_credits")
         required = {c.upper().replace(" ", "") for c in (constraints.get("required_courses") or [])}
@@ -89,6 +90,7 @@ class ScheduleBuilder:
                 already_picked=picked_sections,
                 avoid_days=avoid_days,
                 preferred_days=preferred_days,
+                time_windows=time_windows,
                 no_online=no_online,
             )
             if section is None:
@@ -136,6 +138,7 @@ class ScheduleBuilder:
         already_picked: List[Dict],
         avoid_days: set,
         preferred_days: set,
+        time_windows: List[Dict],
         no_online: bool,
     ) -> Optional[Dict]:
         """Return the best section of `course` that fits, or None."""
@@ -165,21 +168,52 @@ class ScheduleBuilder:
             if not ok:
                 continue
 
-            # score: prefer sections that overlap preferred_days, prefer earlier
+            # score (lower is better):
+            #   1) prefer sections overlapping preferred_days
+            #   2) honor a requested time-of-day window (morning/afternoon/...)
+            #   3) tie-break on earlier start time
             score = 0
             if preferred_days:
                 for mt in meetings:
                     score -= len(set(mt.get("days") or []) & preferred_days)
-            for mt in meetings:
-                start = mt.get("start_time") or "23:59"
-                score += int(start.split(":")[0]) if ":" in start else 24
-                break  # first meeting only for tie-breaking
+
+            first_start = next(
+                (mt.get("start_time") for mt in meetings if mt.get("start_time")),
+                None,
+            )
+            if time_windows and first_start:
+                # Strong push toward sections inside the requested window so an
+                # explicit "afternoon"/"evening" isn't overridden by the
+                # earliest-start tie-break, and "morning" is actually honored.
+                score += -10 if ScheduleBuilder._in_windows(first_start, time_windows) else 10
+
+            start = first_start or "23:59"
+            score += int(start.split(":")[0]) if ":" in start else 24
             candidates.append((score, section))
 
         if not candidates:
             return None
         candidates.sort(key=lambda x: x[0])
         return candidates[0][1]
+
+    @staticmethod
+    def _in_windows(start_time: str, windows: List[Dict]) -> bool:
+        """True if an 'HH:MM' start_time falls within any {start, end} window."""
+        def to_minutes(t: str) -> Optional[int]:
+            try:
+                h, m = (int(x) for x in t.split(":")[:2])
+                return h * 60 + m
+            except (ValueError, AttributeError):
+                return None
+
+        start = to_minutes(start_time)
+        if start is None:
+            return False
+        for w in windows:
+            ws, we = to_minutes(w.get("start", "")), to_minutes(w.get("end", ""))
+            if ws is not None and we is not None and ws <= start < we:
+                return True
+        return False
 
     @staticmethod
     def _summarize(
