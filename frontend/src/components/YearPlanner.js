@@ -32,6 +32,7 @@ function savePlan(plan) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
   } catch (err) {
     console.warn('Failed to save year plan to localStorage:', err);
+  }
 }
 
 function YearPlanner() {
