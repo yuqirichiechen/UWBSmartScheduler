@@ -3,9 +3,19 @@ import './styles/App.css';
 import QueryInput from './components/QueryInput';
 import ScheduleOutput from './components/ScheduleOutput';
 import CompletedCourses from './components/CompletedCourses';
+import ClarifyingQuestions from './components/ClarifyingQuestions';
 import CourseCatalog from './components/CourseCatalog';
 import YearPlanner from './components/YearPlanner';
 import { scheduleAPI } from './services/api';
+
+// A request is "open-ended" when the student is asking for advice rather than
+// stating concrete constraints. In that case we ask what they've completed
+// first (unless they already told us).
+function isAdviceSeeking(query) {
+  const q = (query || '').toLowerCase().trim();
+  if (q.length < 12) return true; // very vague ("test", "help", "idk")
+  return /\b(what|which)\b.*\b(take|class|course|should)\b|recommend|suggest|help me|not sure|don'?t know|no idea|advice|where do i (start|begin)/.test(q);
+}
 
 function App() {
   const [schedule, setSchedule] = useState(null);
@@ -14,6 +24,8 @@ function App() {
   const [completedCourses, setCompletedCourses] = useState([]);
   const [apiStatus, setApiStatus] = useState('checking');
   const [view, setView] = useState('schedule'); // 'schedule' | 'catalog' | 'calendar'
+  const [pendingQuery, setPendingQuery] = useState(null); // awaiting clarification
+  const [lastQuery, setLastQuery] = useState('');
 
   useEffect(() => {
     const checkAPI = async () => {
@@ -28,10 +40,11 @@ function App() {
     checkAPI();
   }, []);
 
-  const handleQuery = async (query) => {
+  const runQuery = async (query) => {
     setLoading(true);
     setError(null);
     setView('schedule');
+    setLastQuery(query);
     try {
       const response = await scheduleAPI.getSchedule(query, completedCourses);
       setSchedule(response);
@@ -42,6 +55,22 @@ function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Intercept open-ended requests to ask a clarifying question first.
+  const handleQuery = (query) => {
+    if (isAdviceSeeking(query) && completedCourses.length === 0) {
+      setPendingQuery(query);
+      setSchedule(null);
+      return;
+    }
+    runQuery(query);
+  };
+
+  const continueAfterClarify = () => {
+    const q = pendingQuery;
+    setPendingQuery(null);
+    runQuery(q);
   };
 
   const handleCompletedCoursesUpdate = (courses) => {
@@ -110,7 +139,7 @@ function App() {
 
           {apiStatus !== 'error' && view === 'schedule' && (
             <>
-              {!schedule && !loading && (
+              {!schedule && !loading && !pendingQuery && (
                 <section className="hero">
                   <div className="hero-eyebrow">UW Bothell · CSS</div>
                   <h2>
@@ -125,7 +154,28 @@ function App() {
               )}
 
               <QueryInput onSubmit={handleQuery} loading={loading} />
-              <CompletedCourses onUpdate={handleCompletedCoursesUpdate} />
+
+              {/* Clarifying prescreen for open-ended asks */}
+              {pendingQuery && !loading && (
+                <>
+                  <div className="user-bubble">{pendingQuery}</div>
+                  <ClarifyingQuestions
+                    query={pendingQuery}
+                    completedCourses={completedCourses}
+                    onUpdateCompleted={handleCompletedCoursesUpdate}
+                    onContinue={continueAfterClarify}
+                    onSkip={continueAfterClarify}
+                  />
+                </>
+              )}
+
+              {/* Normal completed-courses editor (hidden during clarify / results) */}
+              {!pendingQuery && !schedule && (
+                <CompletedCourses
+                  courses={completedCourses}
+                  onUpdate={handleCompletedCoursesUpdate}
+                />
+              )}
 
               {error && (
                 <div className="error-message">{error}</div>
@@ -139,7 +189,26 @@ function App() {
               )}
 
               {schedule && !loading && (
-                <ScheduleOutput schedule={schedule} />
+                <>
+                  {lastQuery && <div className="user-bubble">{lastQuery}</div>}
+                  <ScheduleOutput schedule={schedule} />
+                  <div className="followup">
+                    <button
+                      type="button"
+                      className="followup-btn"
+                      onClick={() => { setSchedule(null); setLastQuery(''); }}
+                    >
+                      ← Start over / new request
+                    </button>
+                    <button
+                      type="button"
+                      className="followup-btn ghost"
+                      onClick={() => setView('calendar')}
+                    >
+                      Save to a quarter in Calendar →
+                    </button>
+                  </div>
+                </>
               )}
             </>
           )}

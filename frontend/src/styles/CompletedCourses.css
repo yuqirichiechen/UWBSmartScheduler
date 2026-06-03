@@ -1,128 +1,191 @@
 /* ============================================
-   Completed Courses — inline strip, no card
+   Completed Courses — prominent picker card
    ============================================ */
 
-.completed-courses {
+.completed {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 4px;
-  animation: fadeInUp 0.5s ease-out 0.1s both;
+  gap: 16px;
+  animation: fadeInUp 0.4s ease-out 0.05s both;
 }
 
-.completed-label {
+.completed.compact {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+.completed-head {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.completed-label-text {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  letter-spacing: 0.01em;
+.completed-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
 }
 
-.completed-label-hint {
-  font-size: 0.74rem;
+.completed-help {
+  font-size: 0.86rem;
   color: var(--text-muted);
-  font-style: italic;
+  line-height: 1.45;
 }
 
-.completed-row {
+/* Quick-add chips for the common CSS sequence */
+.completed-quick {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
+  gap: 8px;
 }
 
-/* Course tag — restrained, paper-colored */
-.course-tag {
+.quick-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 4px 3px 10px;
-  background: var(--bg-surface);
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg-page);
   border: 1px solid var(--border);
   border-radius: 999px;
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--text);
-  animation: fadeIn 0.18s ease-out;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.14s ease;
 }
 
-.remove-btn {
+.quick-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.quick-chip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.quick-chip.on:hover {
+  background: var(--accent-strong);
+  color: #fff;
+}
+
+.quick-chip svg { flex-shrink: 0; }
+
+/* Free-text add row — full width, comfortable target */
+.completed-add {
   display: flex;
+  gap: 10px;
+}
+
+.completed-input {
+  flex: 1;
+  padding: 11px 16px;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.completed-input::placeholder { color: var(--text-faint); }
+
+.completed-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.completed-add-btn {
+  padding: 11px 20px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.completed-add-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.completed-add-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Selected list */
+.completed-selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px 5px 12px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(204, 120, 92, 0.25);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent-strong);
+}
+
+.selected-remove {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-size: 14px;
+  background: transparent;
+  color: var(--accent-strong);
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
   border-radius: 50%;
-  transition: background 0.12s ease, color 0.12s ease;
-}
-
-.remove-btn:hover {
-  background: var(--bg-sunken);
-  color: var(--error);
-}
-
-/* Inline input — looks like another chip until you type */
-.course-input-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px dashed var(--border-strong);
-  border-radius: 999px;
-  background: transparent;
-  padding: 2px 4px 2px 10px;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.course-input-wrap:focus-within {
-  border-style: solid;
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.course-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  color: var(--text);
-  width: 90px;
-  padding: 3px 0;
-}
-
-.course-input::placeholder {
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-.add-course-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 3px 10px;
-  cursor: pointer;
   transition: background 0.12s ease;
 }
 
-.add-course-btn:hover { background: var(--accent-strong); }
+.selected-remove:hover { background: rgba(204, 120, 92, 0.18); }
+
+.clear-all {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.clear-all:hover { color: var(--error); }
 
 @media (max-width: 640px) {
-  .completed-row { gap: 6px; }
-  .course-input { width: 80px; }
+  .completed { padding: 18px; }
+  .completed-add { flex-direction: column; }
+  .completed-add-btn { width: 100%; }
 }

@@ -168,6 +168,49 @@
   line-height: 1.55;
 }
 
+/* Conversational user bubble (echoes the student's request) */
+.user-bubble {
+  align-self: flex-end;
+  max-width: 80%;
+  background: var(--accent-soft);
+  border: 1px solid rgba(204, 120, 92, 0.22);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 16px 16px 4px 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Follow-up actions under a result */
+.followup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.followup-btn {
+  padding: 9px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.followup-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.followup-btn.ghost { color: var(--text-muted); }
+
 /* API error banner */
 .api-error-banner {
   background: var(--bg-surface);

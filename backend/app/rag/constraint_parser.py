@@ -229,45 +229,51 @@ class ConstraintParser:
     
     @staticmethod
     def _extract_time_windows(query: str) -> Optional[List[Dict]]:
-        """Extract preferred time windows from query.
-        
-        Args:
-            query: User query
-            
-        Returns:
-            List of time windows or None
+        """Extract *preferred* time-of-day windows from the query.
+
+        Crucially, a time-of-day word in a "busy/unavailable" context is NOT a
+        preference. "I work afternoons" / "busy in the evening" / "no morning
+        classes" means AVOID that block, so we don't add it as a preferred
+        window (and we drop it from the preferred set if it was implied).
         """
-        # Pattern: "morning", "afternoon", "evening", or specific times like "before 2pm"
         time_windows = []
         query_lower = query.lower()
-        
+
         time_map = {
-            'morning': {'start': '08:00', 'end': '12:00'},
+            'morning':   {'start': '08:00', 'end': '12:00'},
             'afternoon': {'start': '12:00', 'end': '17:00'},
-            'evening': {'start': '17:00', 'end': '21:00'},
+            'evening':   {'start': '17:00', 'end': '21:00'},
+            'night':     {'start': '17:00', 'end': '21:00'},
         }
-        
-        for time_label, times in time_map.items():
-            if time_label in query_lower:
-                time_windows.append(times)
-                logger.debug(f"Extracted {time_label} time window")
-        
-        # Extract specific times like "before 2pm" or "after 10am"
-        specific_time_pattern = r'(?:before|after|until|starting)\s+(\d{1,2}):?(\d{2})?\s*(am|pm)'
-        specific_matches = re.findall(specific_time_pattern, query_lower)
-        
-        for hour, minute, ampm in specific_matches:
-            h = int(hour)
-            m = int(minute) if minute else 0
-            
-            if ampm == 'pm' and h != 12:
-                h += 12
-            elif ampm == 'am' and h == 12:
-                h = 0
-            
-            time_str = f"{h:02d}:{m:02d}"
-            logger.debug(f"Extracted specific time: {time_str}")
-        
+
+        # Words that flip a time-of-day mention from "prefer" to "avoid".
+        BUSY = r"(?:work|working|works|busy|unavailable|can'?t|cannot|no|not|avoid|skip|don'?t|occupied)"
+
+        for label, times in time_map.items():
+            for m in re.finditer(rf'\b{label}s?\b', query_lower):
+                # look back ~25 chars for a busy/negation trigger
+                preceding = query_lower[max(0, m.start() - 25):m.start()]
+                if re.search(rf'\b{BUSY}\b', preceding):
+                    continue  # this block is when they're UNAVAILABLE
+                if times not in time_windows:
+                    time_windows.append(times)
+                    logger.debug(f"Extracted preferred {label} window")
+                break  # one window per label is enough
+
+        # "before 2pm" / "after 10am" → a window from open..time or time..close
+        for m in re.finditer(r'\b(before|after|until|by|starting|from)\s+(\d{1,2}):?(\d{2})?\s*(am|pm)', query_lower):
+            word, hour, minute, ampm = m.group(1), int(m.group(2)), int(m.group(3) or 0), m.group(4)
+            if ampm == 'pm' and hour != 12:
+                hour += 12
+            elif ampm == 'am' and hour == 12:
+                hour = 0
+            t = f"{hour:02d}:{minute:02d}"
+            if word in ('before', 'until', 'by'):
+                time_windows.append({'start': '08:00', 'end': t})
+            else:  # after / starting / from
+                time_windows.append({'start': t, 'end': '21:00'})
+            logger.debug(f"Extracted time bound: {word} {t}")
+
         return time_windows if time_windows else None
     
     @staticmethod

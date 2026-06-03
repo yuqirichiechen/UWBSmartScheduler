@@ -1,0 +1,109 @@
+/* ============================================
+   Clarifying Questions — advisor-style prescreen
+   ============================================ */
+
+.clarify {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.clarify-bubble {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.clarify-avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.clarify-text { display: flex; flex-direction: column; gap: 6px; }
+
+.clarify-lead {
+  font-size: 1.02rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.clarify-lead strong { font-weight: 600; }
+
+.clarify-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.clarify-picker {
+  padding: 4px 0 0 50px;
+}
+
+@media (max-width: 640px) {
+  .clarify-picker { padding-left: 0; }
+}
+
+.clarify-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-left: 50px;
+}
+
+@media (max-width: 640px) {
+  .clarify-actions { padding-left: 0; }
+}
+
+.clarify-primary {
+  padding: 11px 22px;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.2s ease;
+}
+
+.clarify-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.clarify-skip {
+  padding: 11px 18px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clarify-skip:hover {
+  background: var(--bg-sunken);
+  color: var(--text);
+}

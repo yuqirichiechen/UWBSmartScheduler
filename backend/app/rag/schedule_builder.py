@@ -48,18 +48,45 @@ class ScheduleBuilder:
         sections trimmed to exactly the one selected.
         """
         completed = completed_courses or []
-        completed_set = {c.upper().replace(" ", "") for c in completed}
+        time_windows = constraints.get("time_windows") or []
 
+        # Pass 1: enforce the time-of-day window strictly. If that yields nothing
+        # (e.g. "morning only" but every CSS section runs past noon), relax it to
+        # a soft preference so the student still gets a schedule, and note it.
+        picked_courses = ScheduleBuilder._select(constraints, courses, completed,
+                                                 enforce_time_windows=True)
+        relaxed = False
+        if not picked_courses and time_windows:
+            picked_courses = ScheduleBuilder._select(constraints, courses, completed,
+                                                     enforce_time_windows=False)
+            relaxed = picked_courses != []
+
+        total = sum(c["credits"] for c in picked_courses)
+        message = ScheduleBuilder._summarize(
+            picked_courses, total, constraints, constraints.get("min_credits")
+        )
+        if relaxed:
+            message += (" Note: no sections fit entirely in your requested time of "
+                        "day, so the closest-fitting sections were chosen.")
+        return picked_courses, message
+
+    @staticmethod
+    def _select(
+        constraints: Dict,
+        courses: List[Dict],
+        completed: List[str],
+        enforce_time_windows: bool = True,
+    ) -> List[Dict]:
+        """Greedy, conflict-aware selection. Shared by both relaxation passes."""
+        completed_set = {c.upper().replace(" ", "") for c in completed}
         avoid_days = set(constraints.get("avoid_days") or [])
         preferred_days = set(constraints.get("preferred_days") or [])
         time_windows = constraints.get("time_windows") or []
         max_credits = constraints.get("max_credits") or 18
-        min_credits = constraints.get("min_credits")
         required = {c.upper().replace(" ", "") for c in (constraints.get("required_courses") or [])}
         no_online = bool(constraints.get("no_online"))
 
         ranked = ScheduleBuilder._rank_courses(courses, required, completed_set)
-
         picked_courses: List[Dict] = []
         picked_sections: List[Dict] = []
 
@@ -70,7 +97,6 @@ class ScheduleBuilder:
             if any(c["code"] == course["code"] for c in picked_courses):
                 continue
 
-            # prereq check (LLM-free; eligibility is final say)
             missing = [
                 p for p in course.get("prerequisites", [])
                 if p.replace(" ", "").upper() not in completed_set
@@ -79,7 +105,6 @@ class ScheduleBuilder:
                 logger.debug("skip %s — missing prereqs %s", course["code"], missing)
                 continue
 
-            # credit cap (admit only if it would not exceed)
             current_credits = sum(c.get("credits", 0) for c in picked_courses)
             course_credits = course.get("credit_hours", course.get("credits", 0))
             if current_credits + course_credits > max_credits:
@@ -90,7 +115,7 @@ class ScheduleBuilder:
                 already_picked=picked_sections,
                 avoid_days=avoid_days,
                 preferred_days=preferred_days,
-                time_windows=time_windows,
+                time_windows=time_windows if enforce_time_windows else [],
                 no_online=no_online,
             )
             if section is None:
@@ -98,22 +123,19 @@ class ScheduleBuilder:
 
             chosen = dict(course)
             chosen["sections"] = [section]
-            chosen["credits"] = course_credits  # Normalized field for client
+            chosen["credits"] = course_credits
             picked_courses.append(chosen)
 
             sec_for_conflict = dict(section)
             sec_for_conflict["course_code"] = course["code"]
-            sec_for_conflict["credits"] = course_credits  # Use credits for consistency
+            sec_for_conflict["credits"] = course_credits
             sec_for_conflict["prerequisites"] = course.get("prerequisites", [])
             picked_sections.append(sec_for_conflict)
 
             if current_credits + course_credits >= max_credits:
                 break
 
-        # message
-        total = sum(c["credits"] for c in picked_courses)
-        message = ScheduleBuilder._summarize(picked_courses, total, constraints, min_credits)
-        return picked_courses, message
+        return picked_courses
 
     # --------------------------------------------------------------
     @staticmethod
@@ -160,6 +182,14 @@ class ScheduleBuilder:
                 if hit:
                     continue
 
+            # HARD time-window filter: when the student asked for a time of day
+            # (morning/afternoon/evening/before X/after X), skip any section
+            # that doesn't fit ENTIRELY inside the window. This is what makes
+            # "morning classes only" exclude an 11am-1pm class that spills into
+            # the afternoon.
+            if time_windows and not ScheduleBuilder._section_in_windows(meetings, time_windows):
+                continue
+
             # conflict against already-picked
             trial = list(already_picked) + [
                 {**section, "course_code": course["code"]}
@@ -197,23 +227,54 @@ class ScheduleBuilder:
         return candidates[0][1]
 
     @staticmethod
+    def _to_minutes(t: str) -> Optional[int]:
+        try:
+            h, m = (int(x) for x in t.split(":")[:2])
+            return h * 60 + m
+        except (ValueError, AttributeError):
+            return None
+
+    @staticmethod
     def _in_windows(start_time: str, windows: List[Dict]) -> bool:
         """True if an 'HH:MM' start_time falls within any {start, end} window."""
-        def to_minutes(t: str) -> Optional[int]:
-            try:
-                h, m = (int(x) for x in t.split(":")[:2])
-                return h * 60 + m
-            except (ValueError, AttributeError):
-                return None
-
-        start = to_minutes(start_time)
+        start = ScheduleBuilder._to_minutes(start_time)
         if start is None:
             return False
         for w in windows:
-            ws, we = to_minutes(w.get("start", "")), to_minutes(w.get("end", ""))
+            ws = ScheduleBuilder._to_minutes(w.get("start", ""))
+            we = ScheduleBuilder._to_minutes(w.get("end", ""))
             if ws is not None and we is not None and ws <= start < we:
                 return True
         return False
+
+    @staticmethod
+    def _section_in_windows(meetings: List[Dict], windows: List[Dict]) -> bool:
+        """True if EVERY meeting of the section fits entirely within one of the
+        requested windows (start >= window.start and end <= window.end).
+
+        A 15-minute grace is allowed on the end so a class ending exactly at the
+        window boundary (e.g. 11:50 for a noon cutoff) still counts as morning.
+        """
+        if not meetings:
+            return False  # async/online sections don't satisfy a time-of-day ask
+        GRACE = 15
+        for mt in meetings:
+            start = ScheduleBuilder._to_minutes(mt.get("start_time", "") or "")
+            end = ScheduleBuilder._to_minutes(mt.get("end_time", "") or "")
+            if start is None or end is None:
+                return False
+            fits_any = False
+            for w in windows:
+                ws = ScheduleBuilder._to_minutes(w.get("start", ""))
+                we = ScheduleBuilder._to_minutes(w.get("end", ""))
+                if ws is None or we is None:
+                    continue
+                if start >= ws and end <= we + GRACE:
+                    fits_any = True
+                    break
+            if not fits_any:
+                return False
+        return True
 
     @staticmethod
     def _summarize(

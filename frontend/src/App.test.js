@@ -136,6 +136,29 @@ test('catalog nav loads and shows available courses', async () => {
   });
 });
 
+test('open-ended request triggers a clarifying question before generating', async () => {
+  render(<App />);
+  await waitFor(() => expect(screen.getByText(/^Connected$/)).toBeInTheDocument());
+
+  const textarea = screen.getByPlaceholderText(/Tuesday and Thursday/i);
+  fireEvent.change(textarea, { target: { value: 'what classes should I take?' } });
+  fireEvent.click(screen.getByRole('button', { name: /Generate Schedule/i }));
+
+  // It should NOT call the API yet — it asks first
+  expect(scheduleAPI.getSchedule).not.toHaveBeenCalled();
+  await waitFor(() =>
+    expect(screen.getByText(/which courses have you already finished/i)).toBeInTheDocument()
+  );
+
+  // Pick a completed course, then continue
+  fireEvent.click(screen.getByRole('button', { name: /^CSS 143$/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Build my schedule/i }));
+
+  await waitFor(() =>
+    expect(scheduleAPI.getSchedule).toHaveBeenCalledWith('what classes should I take?', ['CSS 143'])
+  );
+});
+
 test('calendar nav opens year planner with quarter tabs', async () => {
   // Clean storage so the planner starts empty
   localStorage.removeItem('smartsched.yearplan.v1');

@@ -246,45 +246,60 @@ async def get_schedule(request: ScheduleRequest):
         ]
         logger.info(f"{len(eligible_courses)} courses eligible after completion filter")
 
-        # 5. Build schedule — deterministic builder is primary, RAG is optional.
-        try:
-            hydrated_courses, message = ScheduleBuilder.build(
-                constraints=constraints,
-                courses=eligible_courses,
-                completed_courses=completed,
-            )
-        except (HTTPException, ValueError, KeyError, TypeError) as e:
-            logger.error(f"Schedule building failed: {e}")
-            raise HTTPException(status_code=500, detail=f"Failed to build schedule: {str(e)}")
+        # 5. Build schedule.
+        #    Primary path: the LLM SELECTS the courses+sections (grounded in the
+        #    real offerings), and we validate its picks against the conflict
+        #    checker. If the LLM is unavailable or returns an invalid/conflicting
+        #    set, we fall back to the deterministic ScheduleBuilder.
+        hydrated_courses = None
+        message = None
+        used_llm = False
 
-        # Optional LLM pass: grounds the recommendation message in the course
-        # catalog. Gemini File Search is preferred; the legacy OpenAI pipeline
-        # is a fallback. Either way, the deterministic builder remains the
-        # source of truth for which sections are picked — the LLM only rewrites
-        # the human-readable summary using `hydrated_courses` (what the student
-        # actually sees).
         if gemini_rag:
             try:
-                rec = gemini_rag.recommend_schedule(
+                selection = gemini_rag.select_schedule(
                     constraints=constraints,
-                    retrieved_courses=hydrated_courses,
+                    available_courses=eligible_courses,
                     completed_courses=completed,
                 )
-                if rec.get("recommendation"):
-                    message = rec["recommendation"]
-            except Exception as e:  # pragma: no cover — best-effort augmentation
-                logger.warning(f"Gemini augmentation failed, keeping deterministic summary: {e}")
-        elif rag_pipeline:
+                if selection and selection.get("picks"):
+                    candidate = _hydrate_llm_picks(selection["picks"], eligible_courses)
+                    cand_sections = _parse_sections_from_hydrated(candidate)
+                    no_conflict, _ = ConflictChecker.check_conflicts(cand_sections)
+                    if candidate and no_conflict:
+                        hydrated_courses = candidate
+                        message = selection.get("summary") or ""
+                        used_llm = True
+                        logger.info(f"LLM selected {len(candidate)} courses (validated, conflict-free)")
+                    else:
+                        logger.info("LLM picks empty/conflicting — falling back to deterministic builder")
+            except Exception as e:  # pragma: no cover — best-effort
+                logger.warning(f"LLM selection failed, falling back to deterministic: {_safe_str(e)}")
+
+        if hydrated_courses is None:
             try:
-                rec = rag_pipeline.recommend_schedule(
+                hydrated_courses, message = ScheduleBuilder.build(
                     constraints=constraints,
-                    retrieved_courses=eligible_courses,
+                    courses=eligible_courses,
                     completed_courses=completed,
                 )
-                if rec.get("recommendation"):
-                    message = rec["recommendation"]
-            except Exception as e:  # pragma: no cover — best-effort augmentation
-                logger.warning(f"RAG augmentation failed, sticking with deterministic build: {e}")
+            except (HTTPException, ValueError, KeyError, TypeError) as e:
+                logger.error(f"Schedule building failed: {e}")
+                raise HTTPException(status_code=500, detail=f"Failed to build schedule: {str(e)}")
+
+            # Optionally let the LLM rewrite the summary (grounded in the catalog)
+            # when it didn't do the selection itself.
+            if gemini_rag and not used_llm:
+                try:
+                    rec = gemini_rag.recommend_schedule(
+                        constraints=constraints,
+                        retrieved_courses=hydrated_courses,
+                        completed_courses=completed,
+                    )
+                    if rec.get("recommendation"):
+                        message = rec["recommendation"]
+                except Exception as e:  # pragma: no cover
+                    logger.warning(f"Gemini summary failed, keeping deterministic: {_safe_str(e)}")
 
         # Validate schedule constraints (informational — builder already
         # enforces them, but we surface any residual issues to the UI).
@@ -606,6 +621,70 @@ def _hydrate_courses(course_codes: List[str], available_courses: List[dict],
                 })
 
     return hydrated
+
+
+def _safe_str(e) -> str:
+    """Condense an exception to a short single line for logging."""
+    s = str(e)
+    return (s[:200] + "…") if len(s) > 200 else s
+
+
+def _hydrate_llm_picks(picks: List[dict], eligible_courses: List[dict],
+                       constraints: Optional[dict] = None) -> List[dict]:
+    """Map LLM picks [{code, section_number}] onto the REAL course/section data.
+
+    Guards against hallucination: a pick is only kept if the course exists in the
+    eligible set. If the named section letter isn't found, we fall back to the
+    course's first section so the student still gets a valid offering.
+    """
+    by_code = {c['code'].replace(' ', '').upper(): c for c in eligible_courses}
+    avoid_days = set(constraints.get('avoid_days') or []) if constraints else set()
+    out = []
+    seen = set()
+    for p in picks:
+        code_norm = (p.get('code') or '').replace(' ', '').upper()
+        if not code_norm or code_norm in seen:
+            continue
+        course = by_code.get(code_norm)
+        if not course:
+            continue  # LLM invented a course not in the offerings — drop it
+        sections = course.get('sections', [])
+        if not sections:
+            continue
+        want = str(p.get('section_number') or '').upper()
+        section = next(
+            (s for s in sections if str(s.get('section_number', '')).upper() == want),
+            sections[0],
+        )
+        # respect avoid_days even if the LLM slipped
+        if avoid_days:
+            meets_bad = any(
+                d in avoid_days
+                for mt in section.get('meeting_times', [])
+                for d in (mt.get('days') or [])
+            )
+            if meets_bad:
+                alt = next(
+                    (s for s in sections if not any(
+                        d in avoid_days
+                        for mt in s.get('meeting_times', [])
+                        for d in (mt.get('days') or [])
+                    )),
+                    None,
+                )
+                if alt is None:
+                    continue  # no acceptable section for this course
+                section = alt
+        seen.add(code_norm)
+        out.append({
+            'code': course['code'],
+            'title': course.get('title', ''),
+            'credits': course.get('credit_hours', course.get('credits', 0)),
+            'prerequisites': course.get('prerequisites', []),
+            'department': course.get('department', ''),
+            'sections': [section],
+        })
+    return out
 
 
 def _parse_sections_from_recommendation(recommended_courses: List[str],

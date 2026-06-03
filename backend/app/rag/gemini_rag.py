@@ -89,6 +89,83 @@ class GeminiRAG:
             raise
 
     # ------------------------------------------------------------------
+    def select_schedule(
+        self,
+        constraints: Dict,
+        available_courses: List[Dict],
+        completed_courses: Optional[List[str]] = None,
+    ) -> Optional[Dict]:
+        """LLM-driven course selection.
+
+        The model is given the student's request and the REAL available sections
+        (already prereq-filtered) and returns which course+section to take, plus
+        a short rationale. We then validate those picks against the real data and
+        the conflict checker upstream — the LLM proposes, code disposes.
+
+        Returns {"picks": [{"code","section_number"}...], "summary": str} or None
+        if the model is unavailable / returns nothing parseable.
+        """
+        completed = completed_courses or []
+
+        # Compact catalog of what's actually offered, so the model can only pick
+        # real sections (prevents hallucinated courses/times).
+        lines = []
+        for c in available_courses:
+            for s in c.get("sections", []):
+                mt = (s.get("meeting_times") or [{}])[0]
+                days = mt.get("days") or []
+                days_s = "".join(days) if isinstance(days, list) else str(days)
+                lines.append(
+                    f"{c['code']} | sec {s.get('section_number', '?')} | "
+                    f"{days_s or 'async'} {mt.get('start_time', '')}-{mt.get('end_time', '')} | "
+                    f"{c.get('credit_hours', c.get('credits', 0))}cr | {c.get('title', '')}"
+                )
+        offerings = "\n".join(lines) or "(no eligible sections)"
+
+        constraint_text = json.dumps(
+            {k: v for k, v in constraints.items()
+             if v not in (None, [], False, "") and k != "query"},
+            default=str,
+        )
+
+        prompt = f"""You are a UW Bothell CSS academic advisor building a quarter schedule.
+
+Pick the best set of courses+sections from the AVAILABLE OFFERINGS below that
+satisfies the student's request. Rules:
+- Choose ONE section per course, by its exact section letter.
+- Respect hard constraints: avoided days, credit cap, required courses, time of day.
+- No two chosen sections may overlap in time.
+- Prefer 3-4 courses (~15 credits) unless the student asked for fewer/more.
+- Only pick from the offerings listed — never invent a course or section.
+
+STUDENT REQUEST: {constraints.get('query', '')}
+PARSED CONSTRAINTS: {constraint_text}
+COMPLETED COURSES: {', '.join(completed) or 'none reported'}
+
+AVAILABLE OFFERINGS (code | section | days/time | credits | title):
+{offerings}
+
+Return ONLY a JSON object, no prose, of the form:
+{{"picks": [{{"code": "CSS 342", "section_number": "A"}}], "summary": "one or two sentences explaining the choice and any tradeoff"}}"""
+
+        try:
+            raw = self._generate(prompt)
+            data = _parse_json(raw)
+            if not data or "picks" not in data:
+                return None
+            # normalize
+            picks = []
+            for p in data.get("picks", []):
+                code = (p.get("code") or "").strip()
+                sec = str(p.get("section_number") or p.get("section") or "").strip()
+                if code:
+                    picks.append({"code": code, "section_number": sec})
+            return {"picks": picks, "summary": data.get("summary", "")}
+        except Exception as e:
+            logger.warning("Gemini select_schedule unavailable (%s)", _short_err(e))
+            return None
+
+    # ------------------------------------------------------------------
     def recommend_schedule(
         self,
         constraints: Dict,
@@ -176,11 +253,33 @@ Respond with plain text only."""
             return "Sorry — the catalog assistant is unavailable right now."
 
 
+def _parse_json(text: str) -> Optional[Dict]:
+    """Parse a JSON object out of an LLM response, tolerating ```json fences."""
+    if not text:
+        return None
+    t = text.strip()
+    # strip code fences
+    if t.startswith("```"):
+        t = t.split("```", 2)[1] if "```" in t[3:] else t[3:]
+        if t.startswith("json"):
+            t = t[4:]
+    # grab the outermost {...}
+    start, end = t.find("{"), t.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        return None
+    try:
+        return json.loads(t[start:end + 1])
+    except json.JSONDecodeError:
+        return None
+
+
 def _short_err(e: Exception) -> str:
     """Condense a noisy SDK exception (e.g. a full 429 JSON blob) to one line."""
     msg = str(e)
     if "RESOURCE_EXHAUSTED" in msg or "429" in msg:
         return "429 quota exceeded (check GEMINI_MODEL / billing for your key)"
+    if "503" in msg or "UNAVAILABLE" in msg:
+        return "503 model temporarily overloaded (transient — fell back to deterministic)"
     if len(msg) > 200:
         return msg[:200] + "…"
     return msg

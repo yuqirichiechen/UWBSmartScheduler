@@ -1,71 +1,104 @@
 import React, { useState } from 'react';
 import '../styles/CompletedCourses.css';
 
-function CompletedCourses({ onUpdate }) {
-  const [courses, setCourses] = useState([]);
+// The common CSS major sequence — quick toggles so students don't have to type.
+const COMMON_COURSES = [
+  'CSS 142', 'CSS 143', 'CSS 161', 'CSS 211', 'CSS 301',
+  'CSS 342', 'CSS 343', 'CSS 360', 'CSS 370', 'CSS 382',
+];
+
+function CompletedCourses({ courses = [], onUpdate, compact = false }) {
   const [input, setInput] = useState('');
 
-  const handleAddCourse = () => {
-    const courseCode = input.toUpperCase().trim();
-    if (courseCode && !courses.includes(courseCode)) {
-      const updatedCourses = [...courses, courseCode];
-      setCourses(updatedCourses);
-      onUpdate(updatedCourses);
-      setInput('');
-    }
+  const has = (code) => courses.includes(code);
+
+  const toggle = (code) => {
+    onUpdate(has(code) ? courses.filter((c) => c !== code) : [...courses, code]);
   };
 
-  const handleRemoveCourse = (course) => {
-    const updatedCourses = courses.filter(c => c !== course);
-    setCourses(updatedCourses);
-    onUpdate(updatedCourses);
+  const addTyped = () => {
+    const code = input.toUpperCase().trim().replace(/\s+/g, ' ');
+    if (code && !courses.includes(code)) {
+      onUpdate([...courses, code]);
+    }
+    setInput('');
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleAddCourse();
-    }
-  };
+  const remove = (code) => onUpdate(courses.filter((c) => c !== code));
 
   return (
-    <div className="completed-courses">
-      <div className="completed-label">
-        <span className="completed-label-text">Already completed</span>
-        <span className="completed-label-hint">used to gate prerequisites</span>
+    <section className={`completed ${compact ? 'compact' : ''}`}>
+      <div className="completed-head">
+        <h3 className="completed-title">Courses you've already completed</h3>
+        <p className="completed-help">
+          Used to check prerequisites and avoid recommending classes you've taken.
+        </p>
       </div>
 
-      <div className="completed-row">
-        {courses.map((course) => (
-          <span key={course} className="course-tag">
-            {course}
-            <button
-              onClick={() => handleRemoveCourse(course)}
-              className="remove-btn"
-              title={`Remove ${course}`}
-              aria-label={`Remove ${course}`}
-            >
-              ×
-            </button>
-          </span>
+      <div className="completed-quick">
+        {COMMON_COURSES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            className={`quick-chip ${has(code) ? 'on' : ''}`}
+            onClick={() => toggle(code)}
+            aria-pressed={has(code)}
+          >
+            {has(code) && <Check />}
+            {code}
+          </button>
         ))}
-
-        <span className="course-input-wrap">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value.toUpperCase())}
-            onKeyPress={handleKeyPress}
-            placeholder={courses.length ? 'Add another…' : 'e.g. CSS 143'}
-            className="course-input"
-          />
-          {input.trim() && (
-            <button onClick={handleAddCourse} className="add-course-btn">
-              add
-            </button>
-          )}
-        </span>
       </div>
-    </div>
+
+      <div className="completed-add">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value.toUpperCase())}
+          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTyped())}
+          placeholder="Add another course, e.g. CSS 225"
+          className="completed-input"
+        />
+        <button
+          type="button"
+          className="completed-add-btn"
+          onClick={addTyped}
+          disabled={!input.trim()}
+        >
+          Add
+        </button>
+      </div>
+
+      {courses.length > 0 && (
+        <div className="completed-selected">
+          {courses.map((code) => (
+            <span key={code} className="selected-chip">
+              {code}
+              <button
+                type="button"
+                className="selected-remove"
+                onClick={() => remove(code)}
+                aria-label={`Remove ${code}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          <button type="button" className="clear-all" onClick={() => onUpdate([])}>
+            Clear all
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function Check() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
   );
 }
 
