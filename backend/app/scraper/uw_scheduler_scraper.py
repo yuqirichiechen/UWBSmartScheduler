@@ -35,6 +35,13 @@ class UWScheduleScraper:
         "CSS 330", "CSS 342", "CSS 385", "CSS 430", "CSS 486"
     }
 
+    # Common UW Bothell departments to scrape
+    DEFAULT_DEPARTMENTS = [
+        "css", "math", "phys", "chem", "engr", "bbus", "bus", "fin",
+        "acc", "mgt", "mktn", "econ", "psych", "bio", "envs", "hist",
+        "lit", "writ", "com", "phil", "stat", "info"
+    ]
+
     def __init__(self, cache_dir: str = "../data/cache", max_retries: int = 3, timeout: int = 15):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -50,7 +57,7 @@ class UWScheduleScraper:
     # ------------------------------------------------------------------
 
     def scrape_courses(self, url: Optional[str] = None) -> List[Dict]:
-        """Scrape CSS courses from UW Bothell public time schedule.
+        """Scrape all available courses from UW Bothell public time schedule.
 
         Tries the local cache first, then live scrape, then sample data.
         Every code path runs through `_validate_schema` so the rest of the
@@ -62,7 +69,7 @@ class UWScheduleScraper:
         the deployment anyway.
         """
         # Try cache first (valid for 24 hours)
-        cached = self._load_cached_courses("bothell_css")
+        cached = self._load_cached_courses("bothell_all")
         if cached:
             cached = self._validate_schema(cached, source="cache")
             logger.info(f"Loaded {len(cached)} courses from cache")
@@ -73,7 +80,7 @@ class UWScheduleScraper:
             courses = self._scrape_live()
             if courses:
                 courses = self._validate_schema(courses, source="live")
-                self.cache_courses(courses, "bothell_css")
+                self.cache_courses(courses, "bothell_all")
                 return courses
         else:
             logger.info("Serverless mode: skipping live scrape")
@@ -159,24 +166,51 @@ class UWScheduleScraper:
     # ------------------------------------------------------------------
 
     def _scrape_live(self) -> List[Dict]:
-        """Scrape courses from the live UW Time Schedule."""
-        # Determine current quarter
+        """Scrape courses from the live UW Time Schedule.
+        
+        Tries master file first, then falls back to individual departments.
+        """
         quarter_code = self._current_quarter_code()
-        url = f"{UW_TIMESCHD_BASE}/{quarter_code}/css.html"
-        logger.info(f"Scraping live schedule from {url}")
-
-        html = self._fetch_with_retry(url)
-        if not html or "Shibboleth" in html:
-            logger.warning("Live scrape failed or requires auth")
-            return []
-
-        courses = self._parse_uw_timeschedule(html)
-        # Attach prerequisites
-        for course in courses:
-            course['prerequisites'] = self._get_prerequisites(course['code'])
-
-        logger.info(f"Scraped {len(courses)} courses from live schedule")
-        return courses
+        all_courses = []
+        
+        # Try master file first
+        master_urls = [
+            f"{UW_TIMESCHD_BASE}/{quarter_code}/all.html",
+            f"{UW_TIMESCHD_BASE}/{quarter_code}/b.html",
+            f"{UW_TIMESCHD_BASE}/{quarter_code}/index.html",
+        ]
+        
+        for master_url in master_urls:
+            logger.info(f"Trying master schedule: {master_url}")
+            html = self._fetch_with_retry(master_url)
+            if html and "Shibboleth" not in html and len(html) > 1000:
+                logger.info("✓ Master schedule found")
+                courses = self._parse_uw_timeschedule(html)
+                for course in courses:
+                    course['prerequisites'] = self._get_prerequisites(course['code'])
+                logger.info(f"Scraped {len(courses)} courses from master schedule")
+                return courses
+        
+        logger.info("Master schedule not found, scraping individual departments")
+        
+        # Fallback: scrape individual departments
+        for dept in self.DEFAULT_DEPARTMENTS:
+            url = f"{UW_TIMESCHD_BASE}/{quarter_code}/{dept}.html"
+            html = self._fetch_with_retry(url)
+            
+            if not html or "Shibboleth" in html:
+                logger.debug(f"Skipped {dept.upper()} (not found or auth required)")
+                continue
+            
+            courses = self._parse_uw_timeschedule(html)
+            if courses:
+                for course in courses:
+                    course['prerequisites'] = self._get_prerequisites(course['code'])
+                logger.info(f"  + {dept.upper()}: {len(courses)} courses")
+                all_courses.extend(courses)
+        
+        logger.info(f"Scraped {len(all_courses)} total courses from live schedule")
+        return all_courses
 
     def _current_quarter_code(self) -> str:
         """Determine the current UW quarter code like 'SPR2026'."""
@@ -200,10 +234,12 @@ class UWScheduleScraper:
 
         The page uses <pre> formatted text with fixed-width columns
         and green course-header tables with anchor tags.
+        Supports any department (css, math, phys, etc.).
         """
         # Course header: <A NAME=css342>CSS&nbsp;&nbsp; 342 </A>&nbsp;<A HREF=...>DATA, ALG, MATH I</A>
+        # Updated to support any department code
         course_re = re.compile(
-            r'<A NAME=css(\d+)>CSS&nbsp;&nbsp;\s*(\d+)\s*</A>\s*&nbsp;'
+            r'<A NAME=([a-z]+)(\d+)>(?:[A-Z]+)&nbsp;&nbsp;\s*(?:\d+)\s*</A>\s*&nbsp;'
             r'<A HREF=[^>]*>([^<]+)</A>'
         )
 
@@ -218,14 +254,14 @@ class UWScheduleScraper:
             r'(\d+)/\s*(\d+)'                   # Enrolled/Limit
         )
 
-        # Find course positions
+        # Find course positions (now captures department code, number, and title)
         course_positions = [
-            (m.start(), m.group(2), m.group(3).strip())
+            (m.start(), m.group(1).upper(), m.group(2), m.group(3).strip())
             for m in course_re.finditer(html)
         ]
 
         courses = []
-        for i, (pos, num, title) in enumerate(course_positions):
+        for i, (pos, dept_code, num, title) in enumerate(course_positions):
             end_pos = course_positions[i + 1][0] if i + 1 < len(course_positions) else len(html)
             chunk = html[pos:end_pos]
 
@@ -255,10 +291,10 @@ class UWScheduleScraper:
 
             if sections:
                 courses.append({
-                    'code': f'CSS {num}',
+                    'code': f'{dept_code} {num}',
                     'title': title,
                     'credit_hours': sections[0]['credits'],
-                    'department': 'CSS',
+                    'department': dept_code,
                     'sections': sections,
                 })
 
