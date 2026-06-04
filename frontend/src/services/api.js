@@ -34,6 +34,26 @@ export const scheduleAPI = {
     }
   },
 
+  async clarify(query, completedCourses = []) {
+    try {
+      const response = await apiClient.post('/api/clarify', {
+        query,
+        completed_courses: completedCourses,
+      });
+      return response.data; // { question, options }
+    } catch (error) {
+      // Never block the flow on a clarify failure — return a default.
+      return {
+        question: "What's your main goal for this quarter?",
+        options: [
+          'Make progress on my CSS core requirements',
+          'A lighter load — electives or fewer credits',
+          'Catch up on prerequisites I still need',
+        ],
+      };
+    }
+  },
+
   async getCourses() {
     try {
       const response = await apiClient.get('/api/courses');

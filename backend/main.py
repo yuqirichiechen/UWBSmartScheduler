@@ -356,6 +356,36 @@ async def ask_catalog(request: AskRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class ClarifyRequest(BaseModel):
+    """A (possibly vague) scheduling query to generate a clarifying question for."""
+    query: str
+    completed_courses: Optional[List[str]] = None
+
+
+@app.post("/api/clarify")
+async def clarify(request: ClarifyRequest):
+    """Generate one multiple-choice clarifying question for a vague request.
+
+    Returns {question, options: [..]}. Always returns a usable question — the
+    Gemini path is best-effort and falls back to a sensible default.
+    """
+    completed = request.completed_courses or []
+    if gemini_rag:
+        try:
+            return gemini_rag.clarify_question(request.query, completed)
+        except Exception as e:
+            logger.warning(f"clarify failed, using fallback: {e}")
+    # Deterministic fallback when no LLM is configured
+    return {
+        "question": "What's your main goal for this quarter?",
+        "options": [
+            "Make progress on my CSS core requirements",
+            "A lighter load — electives or fewer credits",
+            "Catch up on prerequisites I still need",
+        ],
+    }
+
+
 @app.get("/api/catalog")
 async def get_catalog():
     """Return the full parsed CSS course-descriptions catalog (knowledge base)."""

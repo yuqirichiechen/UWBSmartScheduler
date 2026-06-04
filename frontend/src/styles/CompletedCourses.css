@@ -23,16 +23,54 @@
 
 .completed-head {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
+}
+
+.completed-head-text {
+  display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
 .completed-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
 }
+
+.completed-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.completed-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.18s ease;
+}
+
+.completed-chevron.open { transform: rotate(180deg); }
 
 .completed-help {
   font-size: 0.86rem;

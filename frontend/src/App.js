@@ -25,6 +25,8 @@ function App() {
   const [apiStatus, setApiStatus] = useState('checking');
   const [view, setView] = useState('schedule'); // 'schedule' | 'catalog' | 'calendar'
   const [pendingQuery, setPendingQuery] = useState(null); // awaiting clarification
+  const [clarify, setClarify] = useState(null); // { question, options } | null
+  const [clarifyLoading, setClarifyLoading] = useState(false);
   const [lastQuery, setLastQuery] = useState('');
 
   useEffect(() => {
@@ -57,19 +59,37 @@ function App() {
     }
   };
 
-  // Intercept open-ended requests to ask a clarifying question first.
-  const handleQuery = (query) => {
-    if (isAdviceSeeking(query) && completedCourses.length === 0) {
+  // Intercept open-ended requests to ask an AI-generated clarifying question.
+  const handleQuery = async (query) => {
+    if (isAdviceSeeking(query)) {
       setPendingQuery(query);
       setSchedule(null);
+      setClarify(null);
+      setClarifyLoading(true);
+      try {
+        const q = await scheduleAPI.clarify(query, completedCourses);
+        setClarify(q);
+      } finally {
+        setClarifyLoading(false);
+      }
       return;
     }
     runQuery(query);
   };
 
-  const continueAfterClarify = () => {
+  // User picked an option (or typed "Other"): fold it into the query + generate.
+  const answerClarify = (answer) => {
+    const base = pendingQuery || '';
+    const augmented = `${base} — ${answer}`.trim();
+    setPendingQuery(null);
+    setClarify(null);
+    runQuery(augmented);
+  };
+
+  const skipClarify = () => {
     const q = pendingQuery;
     setPendingQuery(null);
+    setClarify(null);
     runQuery(q);
   };
 
@@ -153,28 +173,30 @@ function App() {
                 </section>
               )}
 
+              {/* Completed-courses context card — now ABOVE the chatbox */}
+              {!schedule && (
+                <CompletedCourses
+                  courses={completedCourses}
+                  onUpdate={handleCompletedCoursesUpdate}
+                  collapsible
+                />
+              )}
+
               <QueryInput onSubmit={handleQuery} loading={loading} />
 
-              {/* Clarifying prescreen for open-ended asks */}
+              {/* AI clarifying question for open-ended asks */}
               {pendingQuery && !loading && (
                 <>
                   <div className="user-bubble">{pendingQuery}</div>
                   <ClarifyingQuestions
                     query={pendingQuery}
-                    completedCourses={completedCourses}
-                    onUpdateCompleted={handleCompletedCoursesUpdate}
-                    onContinue={continueAfterClarify}
-                    onSkip={continueAfterClarify}
+                    question={clarify?.question}
+                    options={clarify?.options || []}
+                    loadingQuestion={clarifyLoading}
+                    onAnswer={answerClarify}
+                    onSkip={skipClarify}
                   />
                 </>
-              )}
-
-              {/* Normal completed-courses editor (hidden during clarify / results) */}
-              {!pendingQuery && !schedule && (
-                <CompletedCourses
-                  courses={completedCourses}
-                  onUpdate={handleCompletedCoursesUpdate}
-                />
               )}
 
               {error && (

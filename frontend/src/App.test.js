@@ -7,6 +7,10 @@ jest.mock('./services/api');
 
 beforeEach(() => {
   scheduleAPI.healthCheck = jest.fn().mockResolvedValue({ status: 'healthy' });
+  scheduleAPI.clarify = jest.fn().mockResolvedValue({
+    question: 'What is your main goal this quarter?',
+    options: ['Finish CSS core', 'Lighter elective load', 'Catch up on prereqs'],
+  });
   scheduleAPI.getCourses = jest.fn().mockResolvedValue({
     count: 1,
     status: 'ready',
@@ -136,7 +140,7 @@ test('catalog nav loads and shows available courses', async () => {
   });
 });
 
-test('open-ended request triggers a clarifying question before generating', async () => {
+test('open-ended request asks a multiple-choice question before generating', async () => {
   render(<App />);
   await waitFor(() => expect(screen.getByText(/^Connected$/)).toBeInTheDocument());
 
@@ -144,18 +148,20 @@ test('open-ended request triggers a clarifying question before generating', asyn
   fireEvent.change(textarea, { target: { value: 'what classes should I take?' } });
   fireEvent.click(screen.getByRole('button', { name: /Generate Schedule/i }));
 
-  // It should NOT call the API yet — it asks first
+  // It should fetch a clarifying question and NOT generate yet
+  await waitFor(() => expect(scheduleAPI.clarify).toHaveBeenCalled());
   expect(scheduleAPI.getSchedule).not.toHaveBeenCalled();
   await waitFor(() =>
-    expect(screen.getByText(/which courses have you already finished/i)).toBeInTheDocument()
+    expect(screen.getByText(/main goal this quarter/i)).toBeInTheDocument()
   );
 
-  // Pick a completed course, then continue
-  fireEvent.click(screen.getByRole('button', { name: /^CSS 143$/ }));
-  fireEvent.click(screen.getByRole('button', { name: /Build my schedule/i }));
-
+  // Pick an option → query gets augmented with that answer, then generates
+  fireEvent.click(screen.getByText('Finish CSS core'));
   await waitFor(() =>
-    expect(scheduleAPI.getSchedule).toHaveBeenCalledWith('what classes should I take?', ['CSS 143'])
+    expect(scheduleAPI.getSchedule).toHaveBeenCalledWith(
+      'what classes should I take? — Finish CSS core',
+      []
+    )
   );
 });
 

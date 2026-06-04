@@ -166,6 +166,49 @@ Return ONLY a JSON object, no prose, of the form:
             return None
 
     # ------------------------------------------------------------------
+    def clarify_question(
+        self,
+        query: str,
+        completed_courses: Optional[List[str]] = None,
+    ) -> Dict:
+        """Generate ONE multiple-choice clarifying question for a vague request.
+
+        Returns {"question": str, "options": [3 short strings]}. Uses Gemini when
+        available; otherwise a sensible default question so the UX never breaks.
+        """
+        completed = completed_courses or []
+        fallback = {
+            "question": "What's your main goal for this quarter?",
+            "options": [
+                "Make progress on my CSS core requirements",
+                "A lighter load — electives or fewer credits",
+                "Catch up on prerequisites I still need",
+            ],
+        }
+        if not query:
+            return fallback
+
+        prompt = (
+            "A UW Bothell CSS student asked a vague scheduling question. As their "
+            "advisor, ask ONE short multiple-choice clarifying question that would "
+            "most help you recommend the right courses. Give EXACTLY 3 concise, "
+            "distinct options (each under 8 words). Don't ask what they've already "
+            "told you.\n\n"
+            f"STUDENT: \"{query}\"\n"
+            f"COMPLETED COURSES: {', '.join(completed) or 'none reported'}\n\n"
+            'Return ONLY JSON: {"question": "...", "options": ["...","...","..."]}'
+        )
+        try:
+            data = _parse_json(self._generate(prompt))
+            if data and data.get("question") and isinstance(data.get("options"), list):
+                opts = [str(o).strip() for o in data["options"] if str(o).strip()][:3]
+                if len(opts) >= 2:
+                    return {"question": str(data["question"]).strip(), "options": opts}
+        except Exception as e:
+            logger.warning("Gemini clarify_question unavailable (%s)", _short_err(e))
+        return fallback
+
+    # ------------------------------------------------------------------
     def recommend_schedule(
         self,
         constraints: Dict,
